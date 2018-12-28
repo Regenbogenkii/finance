@@ -21,6 +21,7 @@ export class AppComponent {
   myExpense: number
   title = 'Rungki-app';
   inputForm: FormGroup
+  editForm: FormGroup
   dataAll
   sumTotal
   input
@@ -42,11 +43,19 @@ export class AppComponent {
   createForm() {
     this.inputForm = new FormGroup({
       // salary: new FormControl(0, Validators.required),
-      incomeInput: new FormControl(0, Validators.required),
-      incomeDescription: new FormControl('', Validators.required),
-      expenseInput: new FormControl(0, Validators.required),
-      expenseDescription: new FormControl('', Validators.required)
+      flag: new FormControl("income", Validators.required),
+      cost: new FormControl(0, Validators.required),
+      description: new FormControl('', Validators.required),
     })
+
+    this.editForm = new FormGroup({
+      // salary: new FormControl(0, Validators.required),
+      flag: new FormControl(null, Validators.required),
+      cost: new FormControl(null, Validators.required),
+      description: new FormControl(null, Validators.required),
+      date: new FormControl(null, Validators.required),
+    })
+
   }
 
   // CRUD method
@@ -80,52 +89,50 @@ export class AppComponent {
     console.log('date', date)
     return date
   }
-  //set data object ready to add or update 
-  onMakeData() {
-    // this.inputForm.value.incomeInput = 0
+
+  onCreate() {
+
+      let temp = this.inputForm.value
+      console.log('temp', temp)
+     // this.sum += parseInt(temp.incomeInput) - parseInt(temp.expenseInput)
+      this.input = {
+        description: temp.description,
+        cost: temp.cost,
+        flag:temp.flag,
+        //showing date
+        date: this.onGetCurrentDate(),
+        createdDate:this.onGetCurrentDate(),
+      }
+  
+    this.dataService.onAddDb(this.input).then(res => {
+      console.log('add+++++', res)
+    })
+    this.inputForm.controls['description'].setValue('')
+      this.inputForm.controls['cost'].setValue(0)
+  
+    this.onGetInput()
+  }
+
+
+  onUpdate(id){
+  
     Object.keys(this.inputForm).map(key=>{
       let temp = this.inputForm.controls[key].value
       this.sum += parseInt(temp.incomeInput) - parseInt(temp.expenseInput)
       this.input = {
-        // salary: this.mySalary,
-        incomeDescription: temp.incomeDescription,
-        incomeInput: temp.incomeInput,
-        expenseDescription: temp.expenseDescription,
-        expenseInput: temp.expenseInput,
-        updatedDate: this.onGetCurrentDate(),
-        total: parseInt(temp.incomeInput) - parseInt(temp.expenseInput)
+        description: temp.incomeDescription,
+        cost: temp.incomeInput,
+        flag:temp.flag,
+        //showing date
+        date: this.onGetCurrentDate(),
+        updatedDate:this.onGetCurrentDate(),
       }
     })   
-    // let tempIncome = this.inputForm.controls['incomeInput'].value
-    // let tempIncDes = this.inputForm.controls['incomeDescription'].value
-    // let tempExpense = this.inputForm.controls['expenseInput'].value
-    // let tempExpDes = this.inputForm.controls['expenseDescription'].value
-    //this.sum = parseInt(tempIncome) - parseInt(tempExpense)
-   
+    this.dataService.onUpdateDb(this.input, id).then(res => {
+        })
   }
 
-  // add or update data
-  onCheckLengthForUpdate() {
-    // if (this.dataAll.length == 0) {
-    // console.log('length = 0');
-    this.onMakeData()
-    // this.onAddInput()
-    this.dataService.onAddDb(this.input).then(res => {
-      console.log('add+++++', res)
-    })
-    // } else {
-    //   console.log('length != 0');
-    //   let id = this.dataAll[0].id
-    //   this.onMakeData()
-    //   this.dataService.onUpdateDb(this.input, id).then(res => {
-    //   })
-    // }
-    Object.keys(this.inputForm.value).map(key => {
-      this.inputForm.controls[key].setValue(0)
-    })
-    this.onGetInput()
-  }
-
+  onDelete(){}
 
   onCheckEmptyInput() {
     // if (this.inputForm.value.incomeDescription == '') this.inputForm.controls['incomeDescription'].setValue(0)

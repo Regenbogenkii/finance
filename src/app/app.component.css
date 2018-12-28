@@ -5,3 +5,7 @@
 .font-inline{
     display : inline-flex
 }
+.inputAccount{
+    width: 600px;
+    margin: auto;
+}

@@ -4,7 +4,7 @@ import * as firebase from 'firebase/app';
   providedIn: 'root'
 })
 export class ServiceService {
-  collectionName = "inputData"
+  collectionName = "accounts"
 
   // Initialize Cloud Firestore through Firebase
   db = firebase.firestore();
@@ -54,7 +54,7 @@ export class ServiceService {
   }
 
   onUpdateDb(data, id) {
-    var dataRef = this.db.collection("inputData").doc(id);
+    var dataRef = this.db.collection(this.collectionName).doc(id);
     return dataRef
     .update(data)
     .then(function() {
