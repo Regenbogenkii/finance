@@ -1,0 +1,106 @@
+<!--The content below is only a placeholder and can be replaced.-->
+<div style="text-align:center">
+  <h1>
+    Welcome to {{ title }}
+  </h1>
+  <img width="300" alt="Angular Logo" src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNTAgMjUwIj4KICAgIDxwYXRoIGZpbGw9IiNERDAwMzEiIGQ9Ik0xMjUgMzBMMzEuOSA2My4ybDE0LjIgMTIzLjFMMTI1IDIzMGw3OC45LTQzLjcgMTQuMi0xMjMuMXoiIC8+CiAgICA8cGF0aCBmaWxsPSIjQzMwMDJGIiBkPSJNMTI1IDMwdjIyLjItLjFWMjMwbDc4LjktNDMuNyAxNC4yLTEyMy4xTDEyNSAzMHoiIC8+CiAgICA8cGF0aCAgZmlsbD0iI0ZGRkZGRiIgZD0iTTEyNSA1Mi4xTDY2LjggMTgyLjZoMjEuN2wxMS43LTI5LjJoNDkuNGwxMS43IDI5LjJIMTgzTDEyNSA1Mi4xem0xNyA4My4zaC0zNGwxNy00MC45IDE3IDQwLjl6IiAvPgogIDwvc3ZnPg==">
+</div>
+
+
+<div class="container">
+  <form [formGroup]="inputForm" (ngSubmit)=" onCheckLengthForUpdate()">
+    <!-- <form [formGroup]="inputForm"> -->
+    <!-- <div class="row">
+      <div class="col-sm-12 col-lg-6">
+          <span><label class="badge badge-pill badge-primary">Salary</label><input class="form-control" type="text" formControlName="salary" placeholder="Salary" (change)="onCheckEmptyInput()"></span>
+      </div>
+
+
+    </div> -->
+    <!-- <div class="custom-control custom-radio custom-control-inline ">
+      <input type="radio" id="checkIncome" name="radioFinance" class="custom-control-input ">
+      <label class="custom-control-label" for="checkIncome">Income</label>
+    </div> -->
+    <!-- <div class="custom-control custom-radio custom-control-inline">
+      <input type="radio" id="checkExpense" name="radioFinance" class="custom-control-input">
+      <label class="custom-control-label" for="checkExpense">Expense</label>
+    </div> -->
+    <div class="row mt-2">
+
+      <div class="col-sm-12 col-lg-6">
+        <span>
+          <label class="badge badge-pill badge-info">Income</label>
+          <input class="form-control" type="text" formControlName="incomeDescription" placeholder="Description" (change)="onMakeData()">
+          <input class="form-control mt-1" type="text" formControlName="incomeInput" placeholder="Income input" (change)="onMakeData(); onCheckEmptyInput()">
+        </span>
+      </div>
+      <div class="col-sm-12 col-lg-6">
+        <span>
+          <label class="badge badge-pill badge-danger">Expense</label>
+          <input class="form-control" type="text" formControlName="expenseDescription" placeholder="Description" (change)="onMakeData()">
+          <input class="form-control mt-1" type="text" formControlName="expenseInput" placeholder="Expense input" (change)="onMakeData(); onCheckEmptyInput()">
+        </span>
+      </div>
+    </div>
+    <div class="row mt-2">
+      <div class="col-sm-12">
+        <div class="card">
+
+          <div class="card-body">
+
+            <div class="col-sm-12">
+              <h5 class="card-title" *ngIf="inputForm.value.incomeInput != '' && inputForm.value.expenseInput == ''">My income {{inputForm.value.incomeInput}} Bath</h5>
+              <h5 class="card-title" *ngIf="inputForm.value.expenseInput != '' && inputForm.value.incomeInput == ''">My expense {{inputForm.value.expenseInput}} Bath</h5>
+              <h5 class="card-title" *ngIf="inputForm.value.expenseInput != '' && inputForm.value.incomeInput != ''">My income {{inputForm.value.incomeInput}} Bath and expense {{inputForm.value.expenseInput}} Bath</h5>
+            </div>
+
+            <h4 class="card-text font-inline pull-right" *ngIf="inputForm.value.expenseInput != '' || inputForm.value.incomeInput != ''"
+              [class.text-success]="1*inputForm.value.incomeInput - 1*inputForm.value.expenseInput >= 0" [class.text-danger]="1*inputForm.value.incomeInput - 1*inputForm.value.expenseInput < 0">My total is &nbsp;
+              <strong>{{1*inputForm.value.incomeInput - 1*inputForm.value.expenseInput | number}}</strong>
+              &nbsp; Bath </h4>
+          </div>
+
+        </div>
+      </div>
+    </div>
+    <div class="row">
+      <div class="col-sm-12 mt-5 ">
+        <button type="submit" class="btn btn-primary pull-right">
+          <i class="fa fas fa-cloud"></i> Update </button>
+
+      </div>
+    </div>
+
+  </form>
+  <div class="row mt-3">
+    <h3>History</h3>
+    <table class="table table-hover">
+      <thead>
+        <tr>
+          <th scope="col">No.</th>
+          <th scope="col">Income</th>
+          <th scope="col">Expense</th>
+          <th scope="col">Updated Date</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let data of dataAll; let i = index">
+          <td>{{i+1}}</td>
+          <td class="text-success">{{data.incomeInput}}</td>
+          <td class="text-danger">{{data.expenseInput}}</td>
+          <td>{{data.updatedDate| date:'dd/MM/yyyy h:mm a '}}</td>
+        </tr>
+        <tr>
+          <td class="text-info" colspan="3">
+            <strong>The Lastest Total</strong>
+          </td>
+          <td class=" pull-right" [ngStyle]="{'color':sumTotal >= 0 ? 'green' : 'red' }">
+            <strong>{{sumTotal}}</strong>
+          </td>
+        </tr>
+
+      </tbody>
+
+    </table>
+  </div>
+</div>
