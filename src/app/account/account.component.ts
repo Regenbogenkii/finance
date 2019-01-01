@@ -1,19 +1,19 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
-import { ServiceService } from './service.service'
+import { ServiceService } from '../service.service'
 import * as moment from 'moment'
-// declare var $: any;
-//import { AngularFirestore } from '@angular/fire/firestore';
-//import { Observable } from 'rxjs';
-//import * as firebase from 'firebase/app';
-// Required for side-effects
-//require("firebase/firestore");
 @Component({
-  selector: 'app-root',
-  templateUrl: './app.component.html',
-  styleUrls: ['./app.component.css']
+  selector: 'app-account',
+  templateUrl: './account.component.html',
+  styleUrls: ['./account.component.css']
 })
-export class AppComponent {
+
+
+export class AccountComponent implements OnInit {
+  // Initialize Cloud Firestore through Firebase
+  // db = firebase.firestore();
+  // collectionName = "inputData"
+  //mySalary = 0
   myIncome: number
   myExpense: number
   title = 'Rungki-app';
@@ -24,6 +24,8 @@ export class AppComponent {
   input
   idEditData
   idDelData
+  doubleDate: false
+  test = 2
   //sum: number
   displayDeleteList = "none"
   constructor(private dataService: ServiceService) {
@@ -31,18 +33,10 @@ export class AppComponent {
   }
 
   ngOnInit() {
-  
-   this.myNavbar()
-  }
+    this.onGetInput()
+    this.createForm()
+    this.onGetCurrentDate()
 
-  
-  myNavbar() {
-    var x = document.getElementById("myTopnav");
-    if (x.className === "topnav") {
-      x.className += " responsive";
-    } else {
-      x.className = "topnav";
-    }
   }
 
   createForm() {
@@ -68,10 +62,14 @@ export class AppComponent {
   onGetInput() {
     this.dataService.onGetDb().then(res => {
       this.dataAll = res
+      
      this.sumTotal = 0
       res.forEach(ele => {
         if(ele.flag == "income")this.sumTotal += 1*ele.cost
         else this.sumTotal -= 1*ele.cost
+        let dd = ele.date
+        console.log('dddd', moment(dd).format('YYYY-MM-DD'))
+        ele.date = moment(dd).format('YYYY-MM-DD')
       })
       console.log('eleelelelel', this.sumTotal)
       console.log('get+++++', this.dataAll)
@@ -174,3 +172,4 @@ export class AppComponent {
   }
 
 }
+

@@ -54,7 +54,7 @@ export class ServiceService {
   }
 
   onUpdateDb(data, id) {
-    var dataRef = this.db.collection(this.collectionName).doc(id);
+    let dataRef = this.db.collection(this.collectionName).doc(id);
     return dataRef
     .update(data)
     .then(function() {
@@ -64,5 +64,15 @@ export class ServiceService {
         // The document probably doesn't exist.
         console.error("Error updating document: ", error);
     });
+  }
+
+  onDeleteDb(idDoc){
+   return this.db.collection(this.collectionName).doc(idDoc)
+   .delete()
+   .then(function() {
+      console.log("Document successfully deleted!");
+  }).catch(function(error) {
+      console.error("Error removing document: ", error);
+  });
   }
 }

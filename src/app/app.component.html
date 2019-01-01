@@ -1,3 +1,14 @@
+
+  <div class="topnav nav navbar-nav" id="myTopnav">
+    <a  [routerLinkActive]="['active']" routerLink="/finance" class="active">My Account</a>
+    <a [routerLinkActive]="['active']" routerLink="/householdStock" >Household Stock</a>
+    <a [routerLinkActive]="['active']">Todo List (coming soon)</a>
+    <a [routerLinkActive]="['active']">Share (coming soon)</a>
+    <a [routerLinkActive]="['active']">About (coming soon)</a>
+    <a class="icon" (click)="myNavbar()">
+      <i class="fa fa-bars"></i>
+    </a>
+  </div>
 <!--The content below is only a placeholder and can be replaced.-->
 <div style="text-align:center">
   <h1>
@@ -7,80 +18,4 @@
 </div>
 
 
-<div class="container">
-  <div class="inputAccount">
-    <form [formGroup]="inputForm" (ngSubmit)=" onCreate()">
-    <!-- <form [formGroup]="inputForm"> -->
-    <!-- <div class="row">
-      <div class="col-sm-12 col-lg-6">
-          <span><label class="badge badge-pill badge-primary">Salary</label><input class="form-control" type="text" formControlName="salary" placeholder="Salary" (change)="onCheckEmptyInput()"></span>
-      </div>
-
-
-    </div> -->
-
-    <div class="col-sm-12 col-lg-6">
-    <div class="custom-control custom-radio custom-control-inline ">
-      <input type="radio" id="checkIncome"  formControlName="flag" value="income" name="flag" class="custom-control-input ">
-      <label class="custom-control-label" for="checkIncome">Income</label>
-    </div>
-    <div class="custom-control custom-radio custom-control-inline">
-      <input type="radio" id="checkExpense" formControlName="flag" value="expense" name="flag" class="custom-control-input">
-      <label class="custom-control-label" for="checkExpense">Expense</label>
-    </div>
-    </div>
-    <div class="row mt-2">
-   
-      <div class="col-sm-12 col-lg-12">
-        <span>
-          <label class="badge badge-pill badge-info" *ngIf="inputForm.value.flag =='income'">Income</label>
-          <label class="badge badge-pill badge-danger"  *ngIf="inputForm.value.flag =='expense'">Expense</label>
-          <input class="form-control" type="text" formControlName="description" placeholder="Description" >
-          <input class="form-control mt-1" type="text" formControlName="cost" placeholder="Income input" >
-        </span>
-
-      </div>
-
-    </div>
-   
-    <div class="row">
-      <div class="col-sm-12 mt-2 ">
-        <button type="submit" class="btn btn-primary pull-right">
-          <i class="fa fas fa-cloud"></i> Update </button>
-
-      </div>
-    </div>
-
-  </form>
-  </div>
-  <hr class="my-4">
-  <div class="row mt-3">
-    <h3>History</h3>
-    <table class="table table-striped">
-      <thead>
-        <tr>
-          <th>Expenditure Date</th>
-          <th >Description</th>
-          <th >Cost</th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr *ngFor="let data of dataAll; let i = index">
-          <td ><strong >{{data.date |date: 'dd/MM/yyyy'}}</strong></td>
-          <td ><strong>{{data.description}}</strong></td>
-          <td [class.text-danger]="data.flag ==='expense'"[class.text-success]="data.flag ==='income'">{{data.cost}}</td>
-        </tr>
-        <tr>
-          <td class="text-info" colspan="2">
-            <strong>Total per day</strong>
-          </td>
-          <td class=" pull-right" [ngStyle]="{'color':sumTotal >= 0 ? 'green' : 'red' }">
-            <strong>{{sumTotal}}</strong>
-          </td>
-        </tr>
-
-      </tbody>
-
-    </table>
-  </div>
-</div>
+<router-outlet></router-outlet>
