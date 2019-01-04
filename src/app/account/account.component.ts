@@ -2,6 +2,14 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { ServiceService } from '../service.service'
 import * as moment from 'moment'
+declare var $
+
+declare interface DataTable {
+  headerRow: string[];
+  footerRow: string[];
+  dataRows: any;
+}
+
 @Component({
   selector: 'app-account',
   templateUrl: './account.component.html',
@@ -9,7 +17,14 @@ import * as moment from 'moment'
 })
 
 
+
 export class AccountComponent implements OnInit {
+
+  public dataTable: DataTable = {
+    headerRow: [ 'Date', 'Description', 'Cost', 'Action' ],
+    footerRow: [ 'Date', 'Description', 'Cost', 'Action' ],
+    dataRows: []
+  };
   // Initialize Cloud Firestore through Firebase
   // db = firebase.firestore();
   // collectionName = "inputData"
@@ -28,17 +43,32 @@ export class AccountComponent implements OnInit {
   test = 2
   //sum: number
   displayDeleteList = "none"
+  
   constructor(private dataService: ServiceService) {
 
   }
 
   ngOnInit() {
-    this.onGetInput()
+   this.onGetInput()
     this.createForm()
     this.onGetCurrentDate()
-
+    let self=this;
+    this.dataTable.dataRows= this.dataAll;
+     console.log('data for table',  this.dataTable.dataRows)
+     setTimeout(function(){
+      self.initTable();
+     }, 20);
   }
 
+  initTable(){
+    $(document).ready( function () {
+      $('#dailyTable').DataTable(
+        {
+          order: [[ 0, 'asc' ], [ 3, 'asc' ]]
+      } 
+      );
+  } );
+  }
   createForm() {
     this.addForm = new FormGroup({
       // salary: new FormControl(0, Validators.required),
