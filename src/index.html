@@ -1,5 +1,6 @@
 <!doctype html>
 <html lang="en">
+
 <head>
   <meta charset="utf-8">
   <title>AngularApp</title>
@@ -7,8 +8,33 @@
 
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="icon" type="image/x-icon" href="favicon.ico">
+  <script src="https://cdn.ckeditor.com/4.9.2/full-all/ckeditor.js"></script>
+  <script> CKEDITOR.config.forcePasteAsPlainText = true; </script>
+  <!-- <script>CKEDITOR.replace( 'myckeditor', {
+     customConfig: '/custom/ckeditor_config.js'
+});</script> -->
+
+
 </head>
+
 <body>
   <app-root></app-root>
+  <!-- <textarea name="editor1"></textarea>
+  <script src="https://cdn.ckeditor.com/4.11.1/standard/ckeditor.js"></script>
+  <script>
+    // Enable local "abbr" plugin from /myplugins/abbr/ folder.
+    CKEDITOR.plugins.addExternal('abbr', '/myplugins/abbr/', 'plugin.js');
+
+    // Replace the <textarea id="editor1"> with a CKEditor
+    // instance, using default configuration.
+    //try{CKEDITOR.replace('body')}catch{}
+    try{CKEDITOR.replace('editor1', {
+      extraPlugins: 'abbr',
+      skin: 'moonocolor,/myskins/moonocolor/',
+      customConfig: '/ckeditor_settings/config.js'
+    })}catch{};
+    
+  </script> -->
 </body>
+
 </html>

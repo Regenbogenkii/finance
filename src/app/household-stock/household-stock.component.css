@@ -1,0 +1,22 @@
+table {
+    width: 100%;
+  }
+  .text-center {
+    text-align: center;
+  }
+
+  .add-card {
+    max-width: 600px;
+  }
+
+  .card {
+    margin: 0 auto; /* Added */
+    float: none; /* Added */
+    margin-bottom: 10px; /* Added */
+}
+
+.mat-input-wrapper{
+    width: 150px!important;
+    height: 10px !important;
+    padding: 1em 0 1em 0 !important;
+}

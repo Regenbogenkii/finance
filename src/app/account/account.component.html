@@ -1,263 +1,219 @@
 <div class="container">
-  
-    <div class="inputAccount">
-      <form [formGroup]="addForm" (ngSubmit)=" onCreate()">
-      <!-- <form [formGroup]="addForm"> -->
-      <!-- <div class="row">
-        <div class="col-sm-12 col-lg-6">
-            <span><label class="badge badge-pill badge-primary">Salary</label><input class="form-control" type="text" formControlName="salary" placeholder="Salary" (change)="onCheckEmptyInput()"></span>
-        </div>
-  
-  
-      </div> -->
-  
+  <h4 class="text-center">
+    <b>Manage my expension</b>
+  </h4>
+  <div class="inputAccount mt-4">
+    <form [formGroup]="addForm" (ngSubmit)=" onCreate()">
       <div class="col-sm-12 col-lg-6">
-      <div class="custom-control custom-radio custom-control-inline ">
-        <input type="radio" id="checkIncome"  formControlName="flag" value="income" name="flag" class="custom-control-input ">
-        <label class="custom-control-label" for="checkIncome">Income</label>
-      </div>
-      <div class="custom-control custom-radio custom-control-inline">
-        <input type="radio" id="checkExpense" formControlName="flag" value="expense" name="flag" class="custom-control-input">
-        <label class="custom-control-label" for="checkExpense">Expense</label>
-      </div>
+        <div class="custom-control custom-radio custom-control-inline ">
+          <input type="radio" id="checkIncome" formControlName="flag" value="income" name="flag" class="custom-control-input ">
+          <label class="custom-control-label" for="checkIncome">Income</label>
+        </div>
+        <div class="custom-control custom-radio custom-control-inline">
+          <input type="radio" id="checkExpense" formControlName="flag" value="expense" name="flag" class="custom-control-input">
+          <label class="custom-control-label" for="checkExpense">Expense</label>
+        </div>
       </div>
       <div class="row mt-2">
-     
+
         <div class="col-sm-12 col-lg-12">
           <span>
             <label class="badge badge-pill badge-info" *ngIf="addForm.value.flag =='income'">Income</label>
-            <label class="badge badge-pill badge-danger"  *ngIf="addForm.value.flag =='expense'">Expense</label>
-            <input class="form-control" type="text" formControlName="description" placeholder="Description" >
-            <input class="form-control mt-1" type="text" formControlName="cost" placeholder="Income input" >
+            <label class="badge badge-pill badge-danger" *ngIf="addForm.value.flag =='expense'">Expense</label>
+            <input class="form-control" type="text" formControlName="description" placeholder="Description" required>
+            <input class="form-control mt-1" type="text" formControlName="cost" onkeypress="return(event.charCode >= '48'&& event.charCode <= '58')" placeholder="cost (It must be number)" required>
+            <div *ngIf="addForm.invalid && addForm.touched" class="alert alert-danger">
+              <p>* Both fields are required</p>
+            </div>
           </span>
-  
+          
+
         </div>
-  
+
       </div>
-     
+
       <div class="row">
         <div class="col-sm-12 mt-2 ">
-          <button type="submit" class="btn btn-primary pull-right">
+          <button type="submit" class="btn btn-primary pull-right" [disabled]="!addForm.valid">
             <i class="fa fas fa-cloud"></i> Create </button>
-  
+
         </div>
       </div>
-  
+
     </form>
-    </div>
-    <hr class="my-4">
-    <nav>
-        <div class="nav nav-tabs" id="nav-tab" role="tablist">
-          <a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-daily" role="tab" aria-controls="nav-home" aria-selected="true">Daily</a>
-          <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-monthly" role="tab" aria-controls="nav-profile" aria-selected="false">Monthly</a>
-       
-        </div>
-      </nav>
-      <div class="tab-content" id="nav-tabContent">
-        <div class="tab-pane fade show active" id="nav-daily" role="tabpanel" aria-labelledby="nav-home-tab">
-            <div class="row mt-3 ml-1">
-                <h3 [ngStyle]="{'color':sumTotal >= 0 ? 'green' : 'red' }">Total {{this.sumTotal | number}} Baht</h3>
-              </div>
-
-              <!-- <div class="row mt-3"> -->
-                
-                  <h3>History</h3>
-                  <table id="dailyTable" class="display" cellspacing="0"  style="width:100%">
-                      <thead>
-                          <tr>
-                              <th>{{ dataTable.headerRow[0] }}</th>
-                              <th>{{ dataTable.headerRow[1] }}</th>
-                              <th>{{ dataTable.headerRow[2] }}</th>
-                              <th>{{ dataTable.headerRow[3] }}</th>
-                            </tr>
-                      </thead>
-                      <tbody>
-                          <tr *ngFor="let row of dataTable.dataRows">
-                              <td ><strong >{{row["date"]}}</strong></td>
-                            <td ><strong>{{row["description"]}}</strong></td>
-                            <td [class.text-danger]="data.flag ==='expense'"[class.text-success]="data.flag ==='income'">{{row["cost"]}}</td>
-                            <td> 
-                                <button type="button" class="btn btn-light "   data-toggle="modal" data-target="#editList" (click)="onRememIdEdit(data)">
-                               <i class="fa fas fa-pencil"></i> </button> &nbsp;
-                               <button type="button" class="btn btn-light "  data-toggle="modal" data-target="#deleteList" (click)="onRememId(data.id)">
-                                 <i class="fa fas fa-trash"></i> </button>
-                               </td>
-                          </tr>
-                        
-                      </tbody>
-                      <tfoot>
-                          <tr>
-                              <th>{{ dataTable.headerRow[0] }}</th>
-                              <th>{{ dataTable.headerRow[1] }}</th>
-                              <th>{{ dataTable.headerRow[2] }}</th>
-                              <th>{{ dataTable.headerRow[3] }}</th>
-                            </tr>
-                      </tfoot>
-                  </table>
-
-                  <div class="table-responsive">
-                  <table class="table table-striped"  >
-                    <thead>
-                      <tr>
-                        <th>Expenditure Date</th>
-                        <th >Description</th>
-                        <th >Cost</th>
-                        <th >Action</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr *ngFor="let data of dataAll; let i = index">
-                         <td ><strong >{{data.date| date: 'dd/MM/yyyy'}}</strong></td>
-                          <!-- <td *ngIf="i==0" ><strong >{{data.date| date: 'dd/MM/yyyy'}}</strong></td>
-                        <td *ngIf="i!=0 && data.date != dataAll[i-1].date" ><strong >{{data.date| date: 'dd/MM/yyyy'}}</strong></td>
-                        <td *ngIf="i!=0 && data.date == dataAll[i-1].date" ><strong ></strong></td> -->
-                        <td ><strong>{{data.description}}</strong></td>
-                        <td [class.text-danger]="data.flag ==='expense'"[class.text-success]="data.flag ==='income'">{{data.cost}}</td>
-                     <td> 
-                       <button type="button" class="btn btn-light "   data-toggle="modal" data-target="#editList" (click)="onRememIdEdit(data)">
-                      <i class="fa fas fa-pencil"></i> </button> &nbsp;
-                      <button type="button" class="btn btn-light "  data-toggle="modal" data-target="#deleteList" (click)="onRememId(data.id)">
-                        <i class="fa fas fa-trash"></i> </button>
-                      </td>
-                      </tr>
-                    </tbody>
-                    <tfoot>
-                      <tr>
-                        <td class="text-info" colspan="3">
-                          <strong>Total per day</strong>
-                        </td>
-                        <td class=" pull-right" [ngStyle]="{'color':sumTotal >= 0 ? 'green' : 'red' }">
-                          <strong  >{{this.sumTotal}}</strong>
-                        </td>
-                        </tr>
-                      </tfoot>
-                  </table>
-                </div>
-                <!-- </div> -->
-        </div>
-        <div class="tab-pane fade" id="nav-monthly" role="tabpanel" aria-labelledby="nav-profile-tab">
-            <div class="row mt-3">
-                <h3 [ngStyle]="{'color':sumTotal >= 0 ? 'green' : 'red' }">Total {{this.sumTotal | number}} Baht</h3>
-              </div>
-
-              <!-- <div class="row mt-3"> -->
-                  <h3>Anual History</h3>
-                  <div class="table-responsive">
-                  <table class="table table-striped">
-                    <thead>
-                      <tr>
-                        <th>Year</th>
-                        <th >Month</th>
-                        <th >Income</th>
-                        <th >Expense</th>
-                        <th >Balance</th>
-                      </tr>
-                    </thead>
-                    <tbody>
-                      <tr *ngFor="let data of dataAll; let i = index">
-                        <td *ngIf="i==0" ><strong >{{data.date | date: 'yyyy'}}</strong></td>
-                        <td *ngIf="i!=0 && data.date != dataAll[i-1].date" ><strong >{{data.date| date: 'yyyy'}}</strong></td>
-                        <td *ngIf="i!=0 && data.date == dataAll[i-1].date" ><strong ></strong></td>
-                        <td *ngIf="i==0"><strong>{{data.date | date: 'MMMM'}}</strong></td>
-                        <td *ngIf="i!=0 && data.date != dataAll[i-1].date"><strong>{{data.date | date: 'MMMM'}}</strong></td>
-                        <td *ngIf="i!=0 && data.date == dataAll[i-1].date"><strong></strong></td>
-                        <td class="text-success">{{data.cost}}</td>
-                        <td class="text-danger">{{data.cost}}</td>
-                        <td >{{data.cost}}</td>
-                     <!-- <td> 
-                       <button type="button" class="btn btn-light "   data-toggle="modal" data-target="#editList" (click)="onRememIdEdit(data)">
-                      <i class="fa fas fa-pencil"></i> </button> &nbsp;
-                      <button type="button" class="btn btn-light "  data-toggle="modal" data-target="#deleteList" (click)="onRememId(data.id)">
-                        <i class="fa fas fa-trash"></i> </button>
-                      </td> -->
-                      </tr>
-                      <tr>
-                        <td class="text-info" colspan="4">
-                          <strong>Total per day</strong>
-                        </td>
-                        <td class=" pull-right" [ngStyle]="{'color':sumTotal >= 0 ? 'green' : 'red' }">
-                          <strong  >{{this.sumTotal}}</strong>
-                        </td>
-                      </tr>
-              
-                    </tbody>
-              
-                  </table>
-                  </div>
-                <!-- </div> -->
-
-        </div>
-      </div>
-  
-  
-  
-    
   </div>
-  
-  <div class="modal fade"  id = "deleteList" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-      <div class="modal-dialog" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title">Delete list</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
+  <hr class="my-4">
+  <!-- daily tab -->
+  <nav>
+    <div class="nav nav-tabs" id="nav-tab" role="tablist">
+      <a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-daily" role="tab" aria-controls="nav-home"
+        aria-selected="true">Daily</a>
+      <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-monthly" role="tab" aria-controls="nav-profile"
+        aria-selected="false">Monthly</a>
+
+    </div>
+  </nav>
+
+  <div class="tab-content" id="nav-tabContent">
+    <div class="tab-pane fade show active" id="nav-daily" role="tabpanel" aria-labelledby="nav-home-tab">
+      <div class="row mt-3 ml-1 pull-right">
+        <h3 [ngStyle]="{'color':sumTotal >= 0 ? 'green' : 'red' }">Total {{this.sumTotal | number}} Baht</h3>
+      </div>
+      <mat-form-field>
+        <input matInput (keyup)="onApplyFilterDaily($event.target.value)" placeholder="Filter">
+      </mat-form-field>
+      <table mat-table [dataSource]="dailyDataSource" class="mat-elevation-z8" matSort>
+
+        <ng-container matColumnDef="date">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> Date </th>
+          <td mat-cell *matCellDef="let element"> {{element.date}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="description">
+          <th mat-header-cell *matHeaderCellDef> description </th>
+          <td mat-cell *matCellDef="let element"> {{element.description}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="cost">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> Cost </th>
+          <td mat-cell *matCellDef="let element"> {{element.cost}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="action">
+          <th mat-header-cell *matHeaderCellDef> Action </th>
+          <td mat-cell *matCellDef="let element">
+            <button type="button" class="btn btn-light " data-toggle="modal" data-target="#editList" (click)="onRememIdEdit(element)">
+              <i class="fa fas fa-pencil"></i>
+            </button> &nbsp;
+            <button type="button" class="btn btn-light " data-toggle="modal" data-target="#deleteList" (click)="onRememId(element.id)">
+              <i class="fa fas fa-trash"></i>
             </button>
-          </div>
-          <div class="modal-body">
-            <p>Are you sure You want to delete this?</p>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-danger" (click)="onDelete()">Delete</button>
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-          </div>
-        </div>
+          </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedDailyColumns; sticky: true"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedDailyColumns;"></tr>
+
+      </table>
+      <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]" (page)="pageEvent = $event" showFirstLastButtons></mat-paginator>
+
+    </div>
+
+    <!-- monthly tab -->
+    <div class="tab-pane fade" id="nav-monthly" role="tabpanel" aria-labelledby="nav-profile-tab">
+      <div class="row mt-3 pull-right">
+        <h3 [ngStyle]="{'color':totalBalance >= 0 ? 'green' : 'red' }">Total {{this.totalBalance | number}} Baht</h3>
+      </div>
+
+      <mat-form-field>
+        <input matInput (keyup)="onApplyFilterMonthly($event.target.value)" placeholder="Filter">
+      </mat-form-field>
+      <table mat-table [dataSource]="monthlyDataSource" class="mat-elevation-z8" matSort>
+
+
+        <ng-container matColumnDef="year">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> Year </th>
+          <td mat-cell *matCellDef="let element"> {{element.year}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="month">
+          <th mat-header-cell *matHeaderCellDef> month </th>
+          <td mat-cell *matCellDef="let element"> {{element.month}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="income">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> Income </th>
+          <td mat-cell *matCellDef="let element"> {{element.income}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="expense">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> Expense </th>
+          <td mat-cell *matCellDef="let element"> {{element.expense}} </td>
+        </ng-container>
+
+        <ng-container matColumnDef="balance">
+          <th mat-header-cell *matHeaderCellDef mat-sort-header> Balance </th>
+          <td mat-cell *matCellDef="let element"> {{element.balance}} </td>
+        </ng-container>
+
+        <tr mat-header-row *matHeaderRowDef="displayedMontlyColumns; sticky: true"></tr>
+        <tr mat-row *matRowDef="let row; columns: displayedMontlyColumns;"></tr>
+
+      </table>
+      <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]" (page)="pageEvent = $event" showFirstLastButtons></mat-paginator>
+
+    </div>
+  </div>
+
+</div>
+
+
+<!-- modal -->
+<div class="modal fade" id="deleteList" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">Delete list</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <p>Are you sure You want to delete this?</p>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-danger" (click)="onDelete()">Delete</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
       </div>
     </div>
-  
-    <div class="modal fade"  id = "editList" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-      <div class="modal-dialog" role="document">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title">Edit list</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-              <span aria-hidden="true">&times;</span>
-            </button>
-          </div>
-          <div class="modal-body">
-              <div class="">
-                  <form [formGroup]="editForm" (ngSubmit)=" onCreate()">
+  </div>
+</div>
+
+<div class="modal fade" id="editList" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <form [formGroup]="editForm" (ngSubmit)=" onUpdate()">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title">Edit list</h5>
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <div class="modal-body">
+          <div class="">
+
             <div class="col-sm-12 col-lg-6">
               <div class="custom-control custom-radio custom-control-inline ">
-                <input type="radio" id="checkIncomeEdit"  formControlName="flag" value="income" name="flag" class="custom-control-input ">
-                <label class="custom-control-label" for="checkIncome">Income</label>
+                <input type="radio" id="checkIncomeEdit" formControlName="flag" value="income" name="flag" class="custom-control-input ">
+                <label class="custom-control-label" for="checkIncomeEdit">Income</label>
               </div>
               <div class="custom-control custom-radio custom-control-inline">
                 <input type="radio" id="checkExpenseEdit" formControlName="flag" value="expense" name="flag" class="custom-control-input">
-                <label class="custom-control-label" for="checkExpense">Expense</label>
+                <label class="custom-control-label" for="checkExpenseEdit">Expense</label>
               </div>
-              </div>
-              <div class="row mt-2">
-             
-                <div class="col-sm-12 col-lg-12">
-                  <span>
-                    <label class="badge badge-pill badge-info" *ngIf="editForm.value.flag =='income'">Income</label>
-                    <label class="badge badge-pill badge-danger"  *ngIf="editForm.value.flag =='expense'">Expense</label>
-                    <input class="form-control" type="text" formControlName="description" placeholder="Description" >
-                    <input class="form-control mt-1" type="text" formControlName="cost" placeholder="Income input" >
-                    <input class="form-control mt-1" type="date" formControlName="date" placeholder="Date" >
-                  </span>
-          
-                </div>
-          
-              </div>
-            </form>
             </div>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-danger" (click)="onUpdate()">Update</button>
-            <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            <div class="row mt-2">
+
+              <div class="col-sm-12 col-lg-12">
+                <span>
+                  <label class="badge badge-pill badge-info" *ngIf="editForm.value.flag =='income'">Income</label>
+                  <label class="badge badge-pill badge-danger" *ngIf="editForm.value.flag =='expense'">Expense</label>
+                  <input class="form-control" type="text" formControlName="description" placeholder="Description">
+                  <input class="form-control mt-1" type="text" formControlName="cost" placeholder="Income input">
+                  <input class="form-control mt-1" type="date" id="dateUpdate" formControlName="date" placeholder="Date">
+                </span>
+
+              </div>
+
+            </div>
+
           </div>
         </div>
+        <div class="modal-footer">
+          <button type="submit" class="btn btn-danger"  [disabled]="!editForm.valid" >Update</button>
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        </div>
       </div>
-    </div>
-    
+    </form>
+  </div>
+</div>

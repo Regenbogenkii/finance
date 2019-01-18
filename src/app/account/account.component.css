@@ -9,5 +9,25 @@
     width: auto;
     margin: auto;
 }
+table {
+    width: 100%;
+  }
+  
+  .mat-form-field {
+    font-size: 14px;
+    width: 100%;
+  }
+  
+  td, th {
+    width: 25%;
+  }
+  /* .mat-cell-action{
+    flex: 0 0 100px !important;
+    white-space: unset !important;
+  } */
+
+  .text-center {
+    text-align: center;
+  }
 
 

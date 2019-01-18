@@ -66,7 +66,7 @@ export class AppComponent {
   // CRUD method
 
   onGetInput() {
-    this.dataService.onGetDb().then(res => {
+    this.dataService.onGetAcDb().then(res => {
       this.dataAll = res
      this.sumTotal = 0
       res.forEach(ele => {
@@ -99,7 +99,7 @@ export class AppComponent {
       createdDate: this.onGetCurrentDate(),
     }
 
-    this.dataService.onAddDb(this.input).then(res => {
+    this.dataService.onAddAcDb(this.input).then(res => {
       console.log('add+++++', res)
     })
     this.addForm.controls['description'].setValue('')
@@ -139,7 +139,7 @@ export class AppComponent {
       }
     //})
     console.log("ready data to updte",   this.input)
-    this.dataService.onUpdateDb(this.input, this.idEditData).then(res => {
+    this.dataService.onUpdateAcDb(this.input, this.idEditData).then(res => {
     
     })
     this.onGetInput()
@@ -147,7 +147,7 @@ export class AppComponent {
 
   onDelete() {
     let id = this.idDelData
-    this.dataService.onDeleteDb(id).then(res => {
+    this.dataService.onDeleteAcDb(id).then(res => {
       console.log('res delete', res)
     })
     this.onGetInput()
