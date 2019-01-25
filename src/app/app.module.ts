@@ -5,7 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { AppComponent } from './app.component';
 import { HouseholdStockComponent } from './household-stock/household-stock.component'
 import { AccountComponent } from './account/account.component';
-import { DialogComponent } from './dialog/dialog.component';
+import { DialogEditComponent } from './dialog-edit/dialog-edit.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { AngularFireModule } from '@angular/fire';
 import { AngularFirestoreModule } from '@angular/fire/firestore';
@@ -27,6 +27,11 @@ import {MatDatepickerModule} from '@angular/material/datepicker';
 import {MatMomentDateModule} from '@angular/material-moment-adapter';
 import {MatCardModule} from '@angular/material/card';
 import {MatDialogModule} from '@angular/material/dialog';
+import { DialogDeleteComponent } from './dialog-delete/dialog-delete.component';
+import { DialogShoppingComponent } from './dialog-shopping/dialog-shopping.component';
+import { DialogAlertNoShoppingListComponent } from './dialog-alert-no-shopping-list/dialog-alert-no-shopping-list.component';
+import { TodoListComponent } from './todo-list/todo-list.component';
+import {MatListModule} from '@angular/material/list';
 
 firebase.initializeApp(environment.firebaseConfig)
 
@@ -35,7 +40,11 @@ firebase.initializeApp(environment.firebaseConfig)
     AppComponent,
     HouseholdStockComponent,
     AccountComponent,
-    DialogComponent
+    DialogEditComponent,
+    DialogDeleteComponent,
+    DialogShoppingComponent,
+    DialogAlertNoShoppingListComponent,
+    TodoListComponent
   ],
   imports: [
     BrowserModule,
@@ -59,12 +68,13 @@ firebase.initializeApp(environment.firebaseConfig)
     MatDatepickerModule,
     MatMomentDateModule,
     MatCardModule,
-    MatDialogModule //modal
+    MatDialogModule, //modal
+    MatListModule
 
   ],
   providers: [],
   bootstrap: [AppComponent],
-  entryComponents: [DialogComponent]
+  entryComponents: [DialogEditComponent, DialogDeleteComponent, DialogShoppingComponent, DialogAlertNoShoppingListComponent]
 })
 export class AppModule {
   

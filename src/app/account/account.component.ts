@@ -237,10 +237,11 @@ export class AccountComponent implements OnInit {
 
     this.dataService.onAddAcDb(this.input).then(res => {
       console.log('add+++++', res)
+      this.addForm.reset()
+      //set val for income just for getting rid of val in inputs and clear validator but want to defualt cost flag
+      this.addForm.controls['flag'].setValue("income")
+
     })
-    this.addForm.controls['description'].setValue('')
-    this.addForm.controls['cost'].setValue(0)
-    this.addForm.controls['flag'].setValue("income")
     this.onGetInput()
   }
 

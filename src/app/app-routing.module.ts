@@ -4,12 +4,13 @@ import { CommonModule } from '@angular/common';
 import { RouterModule, Routes } from '@angular/router';
 import { HouseholdStockComponent } from './household-stock/household-stock.component'
 import { AccountComponent } from './account/account.component';
-
+import { TodoListComponent } from './todo-list/todo-list.component';
 
 const routes: Routes = [
   { path: '', redirectTo: '/finance', pathMatch: 'full' },
   { path: 'finance', component: AccountComponent },
-  { path: 'householdStock', component: HouseholdStockComponent }
+  { path: 'householdStock', component: HouseholdStockComponent },
+  { path: 'todoList', component: TodoListComponent }
 ];
 
 @NgModule({

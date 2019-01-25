@@ -3,13 +3,17 @@ import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { FormBuilder, FormsModule, NgForm } from '@angular/forms';
 import { MatPaginator, MatSort, MatTableDataSource } from '@angular/material';
 import { PageEvent } from '@angular/material';
-import { ServiceService } from '../service.service'
+import { ServiceService } from '../service.service';
 import { MAT_MOMENT_DATE_FORMATS, MomentDateAdapter } from '@angular/material-moment-adapter';
 import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
 import { SelectionModel } from '@angular/cdk/collections';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import * as moment from 'moment'
-import { DialogComponent } from '../dialog/dialog.component'
+import { DialogEditComponent } from '../dialog-edit/dialog-edit.component'
+import { DialogDeleteComponent } from '../dialog-delete/dialog-delete.component'
+import { DialogShoppingComponent } from '../dialog-shopping/dialog-shopping.component'
+import { DialogAlertNoShoppingListComponent } from '../dialog-alert-no-shopping-list/dialog-alert-no-shopping-list.component'
+
 declare var $
 export const MY_FORMATS = {
   parse: {
@@ -35,39 +39,38 @@ export const MY_FORMATS = {
   ],
 })
 export class HouseholdStockComponent implements OnInit {
-  displayedColumns: string[] = ['select', 'name', 'amount', 'action'];
+  name
+  amount
+  displayedColumns: string[] = ['select', 'name', 'amount', 'status', 'action'];
   dataStock: any
   selection: any
-  categories = ['Bathroom Stuffs', 'Cleaning Stuffs', 'Kitchen Stuffs', 'Skin Care', 'Laundry Stuffs', 'Household Stuffs', 'Food', 'Drink']
+  shoppingStatus = "ok"
+  categories = ['Bathroom_Stuffs', 'Cleaning_Stuffs', 'Kitchen_Stuffs', 'Skin_Care', 'Laundry_Stuffs', 'Household_Stuffs', 'Food', 'Drink']
   addForm: FormGroup
   editForm: FormGroup
   dataAll
+  dataById
+  shoppingData = []
   editState = false
   idEditData
+  selectedId
+  shoppingId
+  stockId
+  disabled = false
+  idDeleteData
   checkedBox
   showCartIcon = false
+  toDoList
   @ViewChild(MatPaginator) paginator: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
   constructor(private dataService: ServiceService, public dialog: MatDialog) {
 
   }
-  openDialog(): void {
-    const dialogRef = this.dialog.open(DialogComponent, {
-      width: '500px',
-      height: '250px',
-      data: { name: "Rungki", animal: "dog" }
-    });
-
-    dialogRef.afterClosed().subscribe(result => {
-      console.log('The dialog was closed');
-      // this.animal = result;
-    });
-  }
-
 
   async ngOnInit() {
     this.createForm()
     await this.onGetStock()
+    this.onGetTodoList()
   }
 
   createForm() {
@@ -80,8 +83,7 @@ export class HouseholdStockComponent implements OnInit {
       'checked': new FormControl(false, Validators.required),
       'name': new FormControl('', Validators.required),
       'amount': new FormControl('', Validators.required),
-
-      // 'category': new FormControl('', Validators.required),
+      'category': new FormControl('', Validators.required),
       // 'updatedDate': new FormControl('', Validators.required)
     })
   }
@@ -91,11 +93,18 @@ export class HouseholdStockComponent implements OnInit {
       this.dataAll = res
       console.log('get stock:::', res);
       let temp = this.dataAll
-      res.map(slt => {
-        slt.selected = false
-        slt.checked = false
-        if (this.selection)
-          this.editForm.controls["checked"].setValue(slt.checked = true)
+      res.map(ele => {
+        ele.checked = false
+        if (ele.status == "ok") {
+          ele.disabled = false
+          ele.showCartIcon = false
+        } else if (ele.status == "on_shopping") {
+          ele.disabled = true
+          ele.showCartIcon = true
+        }
+        //ele.checked = true
+        //  if (this.selection)
+        // this.editForm.controls["checked"].setValue(ele.checked = true)
         //console.log('get stock map:::', this.dataAll);
       })
 
@@ -105,25 +114,56 @@ export class HouseholdStockComponent implements OnInit {
 
   }
 
+
+  onGetStockById() {
+    console.log("this.idEditDatathis.idEditDatathis.idEditData", this.idEditData);
+
+    this.dataService.onGetStDbById(this.idEditData).then(res => {
+      this.dataById = res
+      console.log('get stock:::', res);
+      let temp = this.dataById
+    })
+  }
+
+  onGetTodoList() {
+    this.dataService.onGetTdlDb().then(res => {
+      this.toDoList = res
+      console.log("get res", res);
+
+    })
+  }
+
   onAddStock() {
     let tempData = this.addForm.value
+    let data = {
+      name: tempData.name,
+      amount: tempData.amount,
+      shop_amount: 0,
+      category: tempData.category,
+      status: this.shoppingStatus
+    }
     console.log("tempData", tempData);
 
     //let tempData = this.addForm.value
-    this.dataService.onAddStDb(tempData).then(res => {
+    this.dataService.onAddStDb(data).then(res => {
       console.log("add stock::::", res);
 
     })
+    this.addForm.reset()
     this.onGetStock()
   }
 
-  onSelectList() {
-    //console.log("check id:", id);
-    this.checkedBox = this.selection.selected;
-    //console.log("check id:", this.checkedBox);
-    if( this.checkedBox.length != 0) this.showCartIcon = true
-    else this.showCartIcon = false
-    return this.checkedBox && this.showCartIcon
+  onSelectList(id) {
+    this.selectedId = id
+    console.log("check id:", this.selectedId);
+    this.dataAll.forEach((ele, index) => {
+      if (ele.id == this.selectedId) {
+        this.dataAll[index].checked = !this.dataAll[index].checked
+        // this.showCartIcon = !this.showCartIcon
+        // console.log("this.checkedBox.checked true", this.dataAll[index].checked);
+      }
+    })
+   // return this.checkedBox
   }
 
   onGetCurrentDate() {
@@ -132,63 +172,116 @@ export class HouseholdStockComponent implements OnInit {
     return date
   }
 
-  onStockShopping() {
-    console.log("ääääää");
-
-    this.checkedBox.forEach(ele => {
-      ele.createdDate = this.onGetCurrentDate()
-      this.dataService.onAddTdlDb(ele).then(res => {
-        // console.log("add shopping", res);
-        //res.createdDate =  this.onGetCurrentDate()
-        console.log("add shopping", res);
-      })
-
-    })
-    this.dataService.onGetTdlDb().then(res => {
-      console.log("get res", res);
-
-    })
-  }
-
-  onEditList(id) {
+  async openDialogEdit(id) {
     this.idEditData = id
-    // console.log('idididid>>>', this.idEditData);
-    // console.log("edit dataAll", this.dataAll);
+    console.log("idEditDataidEditDataidEditData", this.idEditData);
 
-    //this.editState = true
-    this.dataAll.forEach((ele, index) => {
-      if (ele.id == this.idEditData) {
-        this.dataAll[index].selected = true
-        console.log("selected edit", this.dataAll[index].selected);
-        this.editForm.controls['name'].setValue(ele.name)
-        this.editForm.controls['amount'].setValue(ele.amount)
-        //  console.log("11111111", this.editForm.controls['name'].value);
-        // console.log("22222222", this.editForm.controls['amount'].value);
+    const dialogRef = this.dialog.open(DialogEditComponent, {
+      width: '500px',
+      height: '280px',
+      data: { info: await this.dataService.onGetStDbById(this.idEditData), id: this.idEditData },
+      disableClose: true
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result != "cancel") {
+        this.onGetStock()
       }
+      console.log('The dialog was closed');
+    });
+  }
 
-    })
 
+  async openDialogDelete(id) {
+    this.idDeleteData = id
+    console.log("idDeleteDataidDeleteDataidDeleteDataidDeleteData", this.idDeleteData);
 
-    // let temp = this.editForm.value
-    // temp.name = this.dataAll[1].name
-    // console.log("edit name input", temp.name);
+    const dialogRef = this.dialog.open(DialogDeleteComponent, {
+      width: '500px',
+      height: '280px',
+      data: { info: await this.dataService.onGetStDbById(this.idDeleteData), id: this.idDeleteData },
+      disableClose: true
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result != "cancel") {
+        this.onGetStock()
+      }
+      console.log('The dialog was closed');
+
+    });
 
   }
 
-  async onSaveList() {
-    // this.editState = false
-    let tempData = this.editForm.value
-    console.log('tempData', tempData);
-    let tmp = {
-      name: tempData.name,
-      amount: tempData.amount
+
+  async openDialogShopping() {
+    console.log("shopping data>>>", this.shoppingData);
+
+    const dialogRef = this.dialog.open(DialogShoppingComponent, {
+      width: '85%',
+      height: '85%',
+      data: this.shoppingData,
+      disableClose: true,
+      restoreFocus: false
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result != "cancel") {
+        // this.onGetStock()
+        console.log("result back", result);
+        this.shoppingData.forEach(ele => {
+          this.stockId = ele.id
+          ele.status = "on_shopping"
+          this.dataService.onUpdateStDb(ele, this.stockId).then(res => {
+          })
+
+        })
+        this.onGetStock()
+        console.log("gegegege", this.shoppingData);
+        
+      }
+      console.log('The dialog was closed');
+
+    });
+
+  }
+
+  async openDialogAlertNoShopping() {
+
+    const dialogRef = this.dialog.open(DialogAlertNoShoppingListComponent, {
+      width: '500px',
+      height: '280px',
+      disableClose: true,
+      restoreFocus: false
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result != "cancel") {
+        this.onGetStock()
+      }
+      console.log('The dialog was closed');
+
+    });
+
+  }
+
+  onCheckExistedShoppingList() {
+    this.shoppingData = []
+    this.dataAll.forEach(ele => {
+      //ele.createdDate = this.onGetCurrentDate()
+      // console.log("ele.checked true shopping before check");
+      if (ele.checked == true) {
+        ele.shop_amount = 1
+        this.shoppingData.push(ele)
+      }
+    })
+
+    if (this.shoppingData.length == 0) {
+      this.openDialogAlertNoShopping()
+    } else {
+      this.openDialogShopping()
     }
-    await this.dataService.onUpdateStDb(tmp, this.idEditData).then(res => {
-      console.log('tempData res', res);
-    })
-    await this.onGetStock()
   }
-
 
   /** Whether the number of selected elements matches the total number of rows. */
   isAllSelected() {

@@ -1,0 +1,33 @@
+<h1 mat-dialog-title>Shopping List</h1>
+<div mat-dialog-content>
+<mat-table [dataSource]="shoppingData" class="mat-elevation-z8">
+
+
+  <!-- Name Column -->
+  <ng-container matColumnDef="name">
+    <mat-header-cell *matHeaderCellDef> Name </mat-header-cell>
+    <mat-cell *matCellDef="let element"> {{element.name}} </mat-cell>
+  </ng-container>
+
+  <!-- Weight Column -->
+  <ng-container matColumnDef="amount">
+    <mat-header-cell *matHeaderCellDef> Amount </mat-header-cell>
+    <mat-cell *matCellDef="let element">
+      <mat-form-field appearance="outline" >
+        <mat-label>Edit Amount</mat-label>
+        <input type="number" matInput placeholder="Amount"  min="0" class="text-center"  [(ngModel)]="element.shop_amount">
+      </mat-form-field>
+    </mat-cell>
+  </ng-container>
+
+  
+
+  <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+  <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+</mat-table>
+</div>
+
+<div mat-dialog-actions>
+  <button mat-button (click)="onNoClick()">Cancel</button>
+  <button mat-button color="primary" [mat-dialog-close]="" cdkFocusInitial (click)="onStockShopping()" [disabled]= "disabledBtn">Save</button>
+</div>

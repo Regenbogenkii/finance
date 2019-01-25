@@ -1,0 +1,11 @@
+
+<h1 mat-dialog-title>Select List</h1>
+<div mat-dialog-content class="text-mt text-center">
+
+ <h5 class="font-style">  Please select shopping list first.</h5>
+</div>
+
+<div mat-dialog-actions class="text-mt">
+  <button mat-button (click)="onNoClick()">Cancel</button>
+  <button mat-button color="primary" [mat-dialog-close]="" cdkFocusInitial (click)="onOk()">Ok</button>
+</div>

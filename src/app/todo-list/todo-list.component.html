@@ -1,0 +1,54 @@
+<mat-card class="shopping-card">
+  <mat-card-header>
+    <div mat-card-avatar ><i class="fa fas fa-shopping-cart fa-lg"></i></div>
+    <mat-card-title>Shopping List</mat-card-title>
+  </mat-card-header>
+  
+  <mat-card-content>
+    <!-- <mat-list role="list">
+      <mat-list-item role="listitem" *ngFor="let item of dataAll">{{item.name}} : {{item.shop_amount}}</mat-list-item>
+
+    </mat-list> -->
+
+    <mat-table [dataSource]="todoListData" class="mat-elevation-z8">
+
+        <ng-container matColumnDef="select">
+            <th mat-header-cell *matHeaderCellDef>
+                <!-- <mat-checkbox (change)="$event ? masterToggle() : null"
+                [checked]="selection && isAllSelected() && onSelectList()"
+                [indeterminate]="selection && !isAllSelected() && !onSelectList()">
+                </mat-checkbox> -->
+            </th>
+            <td mat-cell *matCellDef="let row">
+                <mat-checkbox   (change)="onSelectList(row.id)" [checked]= "false" >
+                </mat-checkbox>&nbsp; 
+            </td>
+        </ng-container> 
+      <!-- Name Column -->
+      <ng-container matColumnDef="name">
+        <mat-header-cell *matHeaderCellDef> Name </mat-header-cell>
+        <mat-cell *matCellDef="let element"> {{element.name}} </mat-cell>
+
+      </ng-container>
+    
+      <!-- Weight Column -->
+      <ng-container matColumnDef="amount">
+        <mat-header-cell *matHeaderCellDef> Amount </mat-header-cell>
+        <mat-cell *matCellDef="let element"> <ng-container *ngIf="showBtn">{{element.shop_amount}} </ng-container>
+            <mat-form-field appearance="outline" class="input-size mt-4" *ngIf="!showBtn">
+              <mat-label >Amount</mat-label>
+              <input matInput type= "number" class="text-center" (change)="onChangeShopAmount(element.id)" [(ngModel)]= "element.shop_amount" placeholder="Amount">
+            </mat-form-field>
+        </mat-cell>
+      </ng-container>
+      <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
+      <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+    </mat-table>
+  </mat-card-content>
+  <mat-card-actions>
+    <button mat-stroked-button color="primary" class="mr-1" (click)="onArchieve()">Archieve</button>
+    <button mat-stroked-button color="accent" class="mr-1">Delete</button>
+    <button mat-stroked-button color="warn" class="mr-1" *ngIf="showBtn" (click)= "onEdit()">Edit</button>
+    <button mat-stroked-button class="mr-1" *ngIf="!showBtn" (click)= "onBack()">Back</button>
+  </mat-card-actions>
+</mat-card>
