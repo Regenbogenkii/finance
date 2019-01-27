@@ -49,15 +49,16 @@ export class TodoListComponent implements OnInit {
   onArchieve() {
     this.archievedData.forEach(ele => {
       this.selectedId = ele.id
-      ele.amount += ele.shop_amount
-      ele.shop_amount = 0
+      ele.amount += ele.order 
+      ele.order = 0
+      ele.needed_order = 0
       ele.status = "ok"
       console.log("before update", this.archievedData);
-     // if (ele.checked == true) {
+      if (ele.checked == true) {
         this.dataService.onUpdateStDb(ele, this.selectedId).then(res => {
          // console.log("ssss", res);
         })
-      //}
+      }
     })
     this.onGetStock()
   }
@@ -75,14 +76,26 @@ export class TodoListComponent implements OnInit {
     console.log("edit id:::", this.editedId);
     
     this.todoListData.forEach((ele,index)=>{
-      if(ele.id == this.editedId) this.todoListData[index].checked = false 
-      console.log("this.todoListData[index].checked = false " ,this.todoListData[index].checked);
-     // console.log("this.todoListData[index].checked = false " ,this.todoListData[index]);
-      if(this.todoListData[index].checked = false )
-      this.dataService.onUpdateStDb(ele,this.editedId).then(res=>{
+      console.log("checked 1 " ,this.todoListData[index].checked);
+      if(ele.id == this.editedId) {
+        this.todoListData[index].checked = false 
+        console.log("123<<<<", ele.needed_order);
         
-            })
+        if(ele.needed_order >  ele.order){
+          ele.order = ele.needed_order  
+        }
+        delete ele.checked
+        console.log("456<<<<", ele.needed_order);
+        this.dataService.onUpdateStDb(ele,this.editedId).then(res=>{
+          
+              })
+      }
+      console.log("checked 2 " ,this.todoListData[index].checked);
+     // console.log("this.todoListData[index].checked = false " ,this.todoListData[index]);
+     // if(this.todoListData[index].checked == false )
+   
     })
     console.log("this.todoListData[index].checked = false " ,this.todoListData);
   }
+
 }

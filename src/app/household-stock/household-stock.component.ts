@@ -138,7 +138,7 @@ export class HouseholdStockComponent implements OnInit {
     let data = {
       name: tempData.name,
       amount: tempData.amount,
-      shop_amount: 0,
+      order: 0,
       category: tempData.category,
       status: this.shoppingStatus
     }
@@ -232,6 +232,9 @@ export class HouseholdStockComponent implements OnInit {
         this.shoppingData.forEach(ele => {
           this.stockId = ele.id
           ele.status = "on_shopping"
+          ele.needed_order = ele.order
+          delete this.showCartIcon
+          delete this.disabled
           this.dataService.onUpdateStDb(ele, this.stockId).then(res => {
           })
 
@@ -271,7 +274,8 @@ export class HouseholdStockComponent implements OnInit {
       //ele.createdDate = this.onGetCurrentDate()
       // console.log("ele.checked true shopping before check");
       if (ele.checked == true) {
-        ele.shop_amount = 1
+        ele.order = 1
+      //  ele.needed_order = ele.order
         this.shoppingData.push(ele)
       }
     })

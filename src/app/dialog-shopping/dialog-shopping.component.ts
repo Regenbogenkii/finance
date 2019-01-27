@@ -33,7 +33,7 @@ export class DialogShoppingComponent implements OnInit {
   onCheckNoAmount(){
     console.log("ääääää", this.shoppingData);
     this.shoppingData.forEach(ele=>{
-      if(ele.shop_amount == 0){
+      if(ele.order == 0){
         this.disabledBtn = true
        // this.dataService.onUpdateStDb(ele, this.stockId).then(res => {})
         }else{
