@@ -49,7 +49,8 @@ export class TodoListComponent implements OnInit {
   onArchieve() {
     this.archievedData.forEach(ele => {
       this.selectedId = ele.id
-      ele.amount += ele.order 
+      if(ele.needed_order > ele.order) ele.amount += ele.needed_order 
+      else ele.amount += ele.order
       ele.order = 0
       ele.needed_order = 0
       ele.status = "ok"
@@ -80,10 +81,9 @@ export class TodoListComponent implements OnInit {
       if(ele.id == this.editedId) {
         this.todoListData[index].checked = false 
         console.log("123<<<<", ele.needed_order);
-        
-        if(ele.needed_order >  ele.order){
-          ele.order = ele.needed_order  
-        }
+        // if(ele.needed_order >  ele.order){
+        //   ele.order = ele.needed_order  
+        // }
         delete ele.checked
         console.log("456<<<<", ele.needed_order);
         this.dataService.onUpdateStDb(ele,this.editedId).then(res=>{
