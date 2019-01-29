@@ -4,8 +4,10 @@ import { ServiceService } from '../service.service'
 import { MatPaginator, MatSort, MatTableDataSource } from '@angular/material';
 import { PageEvent } from '@angular/material';
 import * as moment from 'moment'
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
+import {DialogEditAccountComponent} from '../dialog-edit-account/dialog-edit-account.component'
+import {DialogDeleteAccountComponent} from '../dialog-delete-account/dialog-delete-account.component'
 declare var $
-
 @Component({
   selector: 'app-account',
   templateUrl: './account.component.html',
@@ -26,9 +28,11 @@ export class AccountComponent implements OnInit {
   myIncome: number
   myExpense: number
   title = 'Rungki-app';
+  flags = ["income", "expense"]
   addForm: FormGroup
   editForm: FormGroup
   idEditData
+  idDeleteData
   dataAll //get global data
   sumTotal //sum daily
   input //set data for creating and updating
@@ -84,7 +88,7 @@ export class AccountComponent implements OnInit {
   yearNumber
   totalBalance = 0
 
-  constructor(private dataService: ServiceService) {
+  constructor(private dataService: ServiceService, public dialog: MatDialog) {
   }
 
   async ngOnInit() {
@@ -144,7 +148,7 @@ export class AccountComponent implements OnInit {
       this.expenseCost[this.monthName] = 0
       this.totalForMonth[this.monthName] = 0
       res.forEach(ele => {
-        ele.date = moment(ele.date).format('DD MMM YYYY')
+        ele.date = moment(ele.date).format()
         if (ele.flag == "income") this.sumTotal += 1 * ele.cost
         else this.sumTotal -= 1 * ele.cost
         let fullDate = moment(ele.date).format('YYYY-MM-DD')
@@ -245,51 +249,93 @@ export class AccountComponent implements OnInit {
     this.onGetInput()
   }
 
-  onRememIdEdit(data) {
-    console.log("dar dra", data)
-    let tempAdd = data
+  async openDialogEdit(id) {
+    this.idEditData = id
+    console.log("idEditDataidEditDataidEditData", this.idEditData);
 
-    this.editForm.controls['flag'].setValue(tempAdd.flag)
-    this.editForm.controls['cost'].setValue(tempAdd.cost)
-    this.editForm.controls['description'].setValue(tempAdd.description);
-    this.editForm.controls['date'].setValue(moment(tempAdd.date).format('YYYY-MM-DD'));
-    this.idEditData = tempAdd.id
-    //console.log("temp edit", this.idEditData)
+    const dialogRef = this.dialog.open(DialogEditAccountComponent, {
+      width: '500px',
+      height: '420px',
+      data: { info: await this.dataService.onGetAcDbById(this.idEditData), id: this.idEditData },
+      disableClose: true
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result != "cancel") {
+        this.onGetInput()
+      }
+      console.log('The dialog was closed');
+    });
   }
 
-  async onUpdate() {
-    let temp = this.editForm.value
-    console.log('iii', temp)
-    this.input = {
-      description: temp.description,
-      cost: temp.cost,
-      flag: temp.flag,
-      //showing date
-      date: temp.date,
-      updatedDate: this.onGetCurrentDate(),
-    }
-    console.log("ready data to updte", this.input)
-    await this.dataService.onUpdateAcDb(this.input, this.idEditData).then(res => {
-      $('#editList').modal('hide')
-      console.log('res update', res)
-    })
-    await this.onGetInput()
-  }
+  // onRememIdEdit(data) {
+  //   console.log("dar dra", data)
+  //   let tempAdd = data
+
+  //   this.editForm.controls['flag'].setValue(tempAdd.flag)
+  //   this.editForm.controls['cost'].setValue(tempAdd.cost)
+  //   this.editForm.controls['description'].setValue(tempAdd.description);
+  //   this.editForm.controls['date'].setValue(moment(tempAdd.date).format('YYYY-MM-DD'));
+  //   this.idEditData = tempAdd.id
+  //   //console.log("temp edit", this.idEditData)
+  // }
+
+  // async onUpdate() {
+  //   let temp = this.editForm.value
+  //   console.log('iii', temp)
+  //   this.input = {
+  //     description: temp.description,
+  //     cost: temp.cost,
+  //     flag: temp.flag,
+  //     //showing date
+  //     date: temp.date,
+  //     updatedDate: this.onGetCurrentDate(),
+  //   }
+  //   console.log("ready data to updte", this.input)
+  //   await this.dataService.onUpdateAcDb(this.input, this.idEditData).then(res => {
+  //     $('#editList').modal('hide')
+  //     console.log('res update', res)
+  //   })
+  //   await this.onGetInput()
+  // }
 
 
-  onRememId(id) {
-    this.idDelData = id
-    console.log("remember id:::", this.idDelData)
+  // onRememId(id) {
+  //   this.idDelData = id
+  //   console.log("remember id:::", this.idDelData)
+  // }
+
+
+  async openDialogDelete(id) {
+    this.idDeleteData = id
+    console.log("idDeleteDataidDeleteDataidDeleteDataidDeleteData", this.idDeleteData);
+
+    const dialogRef = this.dialog.open(DialogDeleteAccountComponent, {
+      width: '500px',
+      height: '280px',
+      data: { info: await this.dataService.onGetAcDbById(this.idDeleteData), id: this.idDeleteData },
+      disableClose: true
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      if (result != "cancel") {
+        this.onGetInput()
+      }
+      console.log('The dialog was closed');
+
+    });
+
   }
-  onDelete() {
-    let id = this.idDelData
-    this.dataService.onDeleteAcDb(id).then(res => {
-      console.log('res delete', res)
-      $('#deleteList').modal('hide')
-    })
-    this.onGetInput()
-    this.onCallMatTable()
-  }
+
+  // onDelete() {
+  //   let id = this.idDelData
+  //   this.dataService.onDeleteAcDb(id).then(res => {
+  //     console.log('res delete', res)
+  //     $('#deleteList').modal('hide')
+  //   })
+  //   this.onGetInput()
+  //   this.onCallMatTable()
+  // }
 
 
   onCheckEmptyInput() {

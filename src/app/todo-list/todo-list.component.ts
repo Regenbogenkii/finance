@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, Validators } from '@angular/forms';
 import { ServiceService } from '../service.service';
+
 @Component({
   selector: 'app-todo-list',
   templateUrl: './todo-list.component.html',
@@ -14,6 +15,7 @@ export class TodoListComponent implements OnInit {
   showBtn = true
   selectedId
   editedId
+  disabledBtn = true
   constructor(private dataService: ServiceService) { }
 
   ngOnInit() {
@@ -39,9 +41,9 @@ export class TodoListComponent implements OnInit {
       if (ele.id == this.selectedId) {
         this.todoListData[index].checked = !this.todoListData[index].checked
       }
-      if(this.todoListData[index].checked == true) this.archievedData.push(ele)
+      if (this.todoListData[index].checked == true) this.archievedData.push(ele)
       //console.log("this.todoListData[index].checked", this.todoListData[index].checked);
-      
+
     })
     console.log("selected data", this.archievedData);
   }
@@ -49,7 +51,7 @@ export class TodoListComponent implements OnInit {
   onArchieve() {
     this.archievedData.forEach(ele => {
       this.selectedId = ele.id
-      if(ele.needed_order > ele.order) ele.amount += ele.needed_order 
+      if (ele.needed_order > ele.order) ele.amount += ele.needed_order
       else ele.amount += ele.order
       ele.order = 0
       ele.needed_order = 0
@@ -57,7 +59,7 @@ export class TodoListComponent implements OnInit {
       console.log("before update", this.archievedData);
       if (ele.checked == true) {
         this.dataService.onUpdateStDb(ele, this.selectedId).then(res => {
-         // console.log("ssss", res);
+          // console.log("ssss", res);
         })
       }
     })
@@ -72,30 +74,39 @@ export class TodoListComponent implements OnInit {
     this.showBtn = true
   }
 
-  onChangeShopAmount(id){
+  onChangeShopAmount(id) {
     this.editedId = id
     console.log("edit id:::", this.editedId);
-    
-    this.todoListData.forEach((ele,index)=>{
-      console.log("checked 1 " ,this.todoListData[index].checked);
-      if(ele.id == this.editedId) {
-        this.todoListData[index].checked = false 
+
+    this.todoListData.forEach((ele, index) => {
+      console.log("checked 1 ", this.todoListData[index].checked);
+      if (ele.id == this.editedId) {
+        this.todoListData[index].checked = false
         console.log("123<<<<", ele.needed_order);
         // if(ele.needed_order >  ele.order){
         //   ele.order = ele.needed_order  
         // }
         delete ele.checked
         console.log("456<<<<", ele.needed_order);
-        this.dataService.onUpdateStDb(ele,this.editedId).then(res=>{
-          
-              })
+        this.dataService.onUpdateStDb(ele, this.editedId).then(res => {
+
+        })
       }
-      console.log("checked 2 " ,this.todoListData[index].checked);
-     // console.log("this.todoListData[index].checked = false " ,this.todoListData[index]);
-     // if(this.todoListData[index].checked == false )
-   
+      console.log("checked 2 ", this.todoListData[index].checked);
+      // console.log("this.todoListData[index].checked = false " ,this.todoListData[index]);
+      // if(this.todoListData[index].checked == false )
+
     })
-    console.log("this.todoListData[index].checked = false " ,this.todoListData);
+    console.log("this.todoListData[index].checked = false ", this.todoListData);
   }
+
+  onEnableArchieve() {
+      if(this.archievedData.length != 0) {
+        this.disabledBtn = false
+      } else {
+        this.disabledBtn = true
+      }
+  }
+
 
 }

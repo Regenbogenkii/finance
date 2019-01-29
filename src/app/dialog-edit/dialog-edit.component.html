@@ -3,14 +3,13 @@
 <form [formGroup]="editForm" class="example-form">
 <h1 mat-dialog-title>Edit List</h1>
 <div mat-dialog-content>
-  <p>Edit</p>
   <mat-form-field appearance="outline"  >
       <mat-label>Edit Name</mat-label>
-      <input matInput placeholder="Name" class="text-center"  formControlName="name">
+      <input matInput placeholder="Name" class="text-right"  formControlName="name">
     </mat-form-field>&nbsp;
     <mat-form-field appearance="outline" >
         <mat-label>Edit Amount</mat-label>
-        <input type="number" matInput placeholder="Amount"  min="0" class="text-center" formControlName="amount">
+        <input type="number" matInput placeholder="Amount"  min="0" class="text-right" formControlName="amount">
       </mat-form-field>
       <mat-select formControlName="category" placeholder="Categories">
           <mat-option *ngFor="let cat of categories" [value]="cat">
@@ -19,7 +18,7 @@
       </mat-select>
 </div>
 
-<div mat-dialog-actions>
+<div mat-dialog-actions class="mt-4 pull-right">
   <button mat-button (click)="onNoClick()">Cancel</button>
   <button mat-button color="primary" [mat-dialog-close]="" cdkFocusInitial (click)="onSaveList()">Save</button>
 </div>

@@ -32,6 +32,10 @@ import { DialogShoppingComponent } from './dialog-shopping/dialog-shopping.compo
 import { DialogAlertNoShoppingListComponent } from './dialog-alert-no-shopping-list/dialog-alert-no-shopping-list.component';
 import { TodoListComponent } from './todo-list/todo-list.component';
 import {MatListModule} from '@angular/material/list';
+import {MatRadioModule} from '@angular/material/radio';
+import {MatIconModule} from '@angular/material/icon';
+import { DialogEditAccountComponent } from './dialog-edit-account/dialog-edit-account.component';
+import { DialogDeleteAccountComponent } from './dialog-delete-account/dialog-delete-account.component';
 
 firebase.initializeApp(environment.firebaseConfig)
 
@@ -44,7 +48,9 @@ firebase.initializeApp(environment.firebaseConfig)
     DialogDeleteComponent,
     DialogShoppingComponent,
     DialogAlertNoShoppingListComponent,
-    TodoListComponent
+    TodoListComponent,
+    DialogEditAccountComponent,
+    DialogDeleteAccountComponent
   ],
   imports: [
     BrowserModule,
@@ -69,12 +75,20 @@ firebase.initializeApp(environment.firebaseConfig)
     MatMomentDateModule,
     MatCardModule,
     MatDialogModule, //modal
-    MatListModule
+    MatListModule,
+    MatRadioModule,
+    MatIconModule
 
   ],
   providers: [],
   bootstrap: [AppComponent],
-  entryComponents: [DialogEditComponent, DialogDeleteComponent, DialogShoppingComponent, DialogAlertNoShoppingListComponent]
+  entryComponents: [DialogEditComponent, 
+    DialogDeleteComponent, 
+    DialogShoppingComponent, 
+    DialogAlertNoShoppingListComponent,
+    DialogEditAccountComponent,
+    DialogDeleteAccountComponent
+  ]
 })
 export class AppModule {
   

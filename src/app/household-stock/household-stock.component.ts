@@ -45,6 +45,7 @@ export class HouseholdStockComponent implements OnInit {
   dataStock: any
   selection: any
   shoppingStatus = "ok"
+  flags = ["income", "expense"]
   categories = ['Bathroom_Stuffs', 'Cleaning_Stuffs', 'Kitchen_Stuffs', 'Skin_Care', 'Laundry_Stuffs', 'Household_Stuffs', 'Food', 'Drink']
   addForm: FormGroup
   editForm: FormGroup
@@ -57,6 +58,7 @@ export class HouseholdStockComponent implements OnInit {
   shoppingId
   stockId
   disabled = false
+  disabledBtn = true
   idDeleteData
   checkedBox
   showCartIcon = false
@@ -178,7 +180,7 @@ export class HouseholdStockComponent implements OnInit {
 
     const dialogRef = this.dialog.open(DialogEditComponent, {
       width: '500px',
-      height: '280px',
+      height: '380px',
       data: { info: await this.dataService.onGetStDbById(this.idEditData), id: this.idEditData },
       disableClose: true
     });

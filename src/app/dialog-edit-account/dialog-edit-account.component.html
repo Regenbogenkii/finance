@@ -1,0 +1,43 @@
+<div class="inputAccount mt-4">
+  <form [formGroup]="editForm">
+    <div class="col-sm-12 col-lg-6">
+      <mat-radio-group class="example-radio-group" formControlName="flag">
+          <mat-radio-button class="example-radio-button mr-3" *ngFor="let flag of flags" [value]="flag">
+            {{flag}}
+          </mat-radio-button>
+        </mat-radio-group>
+    </div>
+    <div class="row mt-2">
+
+      <div class="col-sm-12 col-lg-12">
+        <span>
+          <label class="badge badge-pill badge-info" *ngIf="editForm.value.flag =='income'">Income</label>
+          <label class="badge badge-pill badge-danger" *ngIf="editForm.value.flag =='expense'">Expense</label>
+          <mat-form-field appearance="outline">
+              <mat-label>Description</mat-label>
+              <input matInput placeholder="Description" formControlName="description" required>
+              <!-- <mat-hint>Don't disclose this info</mat-hint> -->
+            </mat-form-field>
+            <mat-form-field appearance="outline">
+              <mat-label>Cost</mat-label>
+              <input matInput placeholder="Cost" formControlName="cost" onkeypress="return(event.charCode >= '48'&& event.charCode <= '58')" placeholder="cost (It must be number)" required>
+              <!-- <mat-hint>Don't disclose this info</mat-hint> -->
+            </mat-form-field>
+          <mat-form-field appearance="outline">
+            <input matInput [matDatepicker]="picker" formControlName="date" placeholder="Choose a date" readonly>
+            <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
+            <mat-datepicker #picker></mat-datepicker>
+          </mat-form-field>
+        </span>
+
+      </div>
+
+    </div>
+
+    <div mat-dialog-actions class="pull-right">
+      <button mat-button (click)="onNoClick()">Cancel</button>
+      <button mat-button color="primary" [mat-dialog-close]="" cdkFocusInitial [disabled]="editForm.invalid" (click)="onSaveList()">Save</button>
+    </div>
+
+  </form>
+</div>
