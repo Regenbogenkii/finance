@@ -31,7 +31,7 @@ export class DialogShoppingComponent implements OnInit {
   }
 
   onCheckNoAmount(){
-    console.log("ääääää", this.shoppingData);
+   // console.log("ääääää", this.shoppingData);
     this.shoppingData.forEach(ele=>{
       if(ele.order == 0){
         this.disabledBtn = true
@@ -51,13 +51,6 @@ export class DialogShoppingComponent implements OnInit {
   onStockShopping() {
     console.log("ääääää", this.shoppingData);
     this.dialogRef.close(this.shoppingData);
-    // this.shoppingData.forEach(ele => {
-    //   this.stockId = ele.id
-    //   ele.status = "on_shopping"
-    //   this.dataService.onUpdateStDb(ele, this.stockId).then(res => {
-    //   })
-
-    // })
   }
 
 }

@@ -28,21 +28,10 @@ export class DialogEditComponent implements OnInit {
   }
 
   async ngOnInit() {
-    //console.log("dialogData dialog", this.idEditData);
     await this.createForm()
-    //await this.onGetStockById()
-    
     this.editForm.controls['name'].setValue(this.dataById.info.name)
     this.editForm.controls['amount'].setValue(this.dataById.info.amount)
     this.editForm.controls['category'].setValue(this.dataById.info.category)
-   // await this.idEditData.forEach(ele => {
-    //  if (this.idEditData) {
-        // this.editForm.controls['name'].setValue(name)
-        // this.editForm.controls['amount'].setValue(amount)
-        // this.editForm.controls['category'].setValue(category)
-     // }
-   // })
-
   }
 
   createForm() {
@@ -55,7 +44,6 @@ export class DialogEditComponent implements OnInit {
 
 
   async onSaveList() {
-    // this.editState = false
     let tempData = this.editForm.value
     console.log('tempData', tempData);
     let tmp = {

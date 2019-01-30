@@ -20,7 +20,7 @@ deleteData
   }
 
   onOk(){
-console.log("delete list by id",this.deleteData );
+//console.log("delete list by id",this.deleteData );
 
     this.dataService.onDeleteStDb(this.deleteData.id).then(res=>{
 

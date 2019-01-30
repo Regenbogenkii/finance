@@ -44,21 +44,15 @@ export class DialogEditAccountComponent implements OnInit {
 
   ngOnInit() {
     this.createForm()
-    console.log("this.dataById", this.dataById);
-    this.editForm.controls['flag'].setValue(this.dataById.info.flag)
-    this.editForm.controls['cost'].setValue(this.dataById.info.cost)
-    this.editForm.controls['description'].setValue(this.dataById.info.description)
-    this.editForm.controls['date'].setValue(this.dataById.info.date)
-    // Object.keys(this.editForm.value).forEach(key=>{
-    //   this.editForm.controls[key].setValue(this.dataById.info.key)
-    //   //console.log("key", key);
-      
-    // })
+    Object.keys(this.editForm.value).forEach(key=>{
+      this.editForm.controls[key].setValue(this.dataById.info[key])
+      //console.log("key", key); 
+    })
+
   }
 
   createForm() {
     this.editForm = new FormGroup({
-      // salary: new FormControl(0, Validators.required),
       flag: new FormControl("", Validators.required),
       cost: new FormControl(null, Validators.required),
       description: new FormControl(null, Validators.required),
@@ -84,7 +78,6 @@ export class DialogEditAccountComponent implements OnInit {
       date: moment(tempData.date._d).format(),
       updatedDate: this.onGetCurrentDate(),
     }
-    console.log("tmp", tmp.date);
     
     await this.dataService.onUpdateAcDb(tmp, this.dataById.id).then(res => {
       console.log('tempData res', res);

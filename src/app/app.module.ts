@@ -36,6 +36,7 @@ import {MatRadioModule} from '@angular/material/radio';
 import {MatIconModule} from '@angular/material/icon';
 import { DialogEditAccountComponent } from './dialog-edit-account/dialog-edit-account.component';
 import { DialogDeleteAccountComponent } from './dialog-delete-account/dialog-delete-account.component';
+import {MatTabsModule} from '@angular/material/tabs';
 
 firebase.initializeApp(environment.firebaseConfig)
 
@@ -77,7 +78,8 @@ firebase.initializeApp(environment.firebaseConfig)
     MatDialogModule, //modal
     MatListModule,
     MatRadioModule,
-    MatIconModule
+    MatIconModule,
+    MatTabsModule
 
   ],
   providers: [],

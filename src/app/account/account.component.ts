@@ -1,12 +1,12 @@
 import { Component, OnInit, AfterViewInit, ViewChild } from '@angular/core';
-import { FormGroup, FormControl, Validators } from '@angular/forms';
+import { FormGroup, FormControl, Validators, FormGroupDirective } from '@angular/forms';
 import { ServiceService } from '../service.service'
 import { MatPaginator, MatSort, MatTableDataSource } from '@angular/material';
 import { PageEvent } from '@angular/material';
 import * as moment from 'moment'
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
-import {DialogEditAccountComponent} from '../dialog-edit-account/dialog-edit-account.component'
-import {DialogDeleteAccountComponent} from '../dialog-delete-account/dialog-delete-account.component'
+import { DialogEditAccountComponent } from '../dialog-edit-account/dialog-edit-account.component'
+import { DialogDeleteAccountComponent } from '../dialog-delete-account/dialog-delete-account.component'
 declare var $
 @Component({
   selector: 'app-account',
@@ -22,8 +22,10 @@ export class AccountComponent implements OnInit {
   monthlyDataSource: any
   pageEvent: PageEvent;
   pageSizeOptions: number[] = [5, 10, 25, 100];
-  @ViewChild(MatPaginator) paginator: MatPaginator;
+  @ViewChild('paginator') paginator: MatPaginator;
+  @ViewChild('paginator2') paginator2: MatPaginator;
   @ViewChild(MatSort) sort: MatSort;
+  @ViewChild(FormGroupDirective) formDirective: FormGroupDirective;
 
   myIncome: number
   myExpense: number
@@ -94,8 +96,6 @@ export class AccountComponent implements OnInit {
   async ngOnInit() {
     this.createForm()
     await this.onGetInput()
-    console.log('>>', this.dataAll);
-
     this.onGetCurrentDate()
   }
 
@@ -108,14 +108,28 @@ export class AccountComponent implements OnInit {
 
   onApplyFilterMonthly(filterValue: string) {
     this.monthlyDataSource.filter = filterValue.trim().toLowerCase();
-    if (this.monthlyDataSource.paginator) {
-      this.monthlyDataSource.paginator.firstPage();
+    if (this.monthlyDataSource.paginator2) {
+      this.monthlyDataSource.paginator2.firstPage();
     }
   }
 
 
   ngAfterViewInit() {
+    // this.dailyDataSource.paginator = this.paginator;
+    // this.monthlyDataSource.paginator = this.paginator2;
+  }
 
+  //index of tabs to indicate which data table to paginate
+  setDataSource(indexNumber) {
+    setTimeout(() => {
+      switch (indexNumber) {
+        case 0:
+          !this.dailyDataSource.paginator ? this.dailyDataSource.paginator = this.paginator : null;
+          break;
+        case 1:
+          !this.monthlyDataSource.paginator ? this.monthlyDataSource.paginator = this.paginator2 : null;
+      }
+    });
   }
 
   createForm() {
@@ -123,7 +137,7 @@ export class AccountComponent implements OnInit {
       // salary: new FormControl(0, Validators.required),
       flag: new FormControl("income", Validators.required),
       cost: new FormControl(null, Validators.required),
-      description: new FormControl('', Validators.required),
+      description: new FormControl(null, Validators.required),
     })
 
     this.editForm = new FormGroup({
@@ -140,6 +154,8 @@ export class AccountComponent implements OnInit {
 
   async onGetInput() {
     await this.dataService.onGetAcDb().then(res => {
+      console.log("getData", res);
+
       this.dataAll = res
       this.sumTotal = 0
       let tempWholeData
@@ -195,7 +211,6 @@ export class AccountComponent implements OnInit {
           this.monthlyData.push(tempData)
         }
       })
-
       ////total monthly balance 
       this.monthlyData.forEach(bal => {
         this.totalBalance += bal.balance
@@ -204,19 +219,22 @@ export class AccountComponent implements OnInit {
       //  console.log('totalBalance', this.totalBalance)
       //   console.log('monthlyData', this.monthlyData)
       //console.log('eleelelelel', this.sumTotal)
-      console.log('get+++++', this.dataAll)
-      this.onCallMatTable()
+      //console.log('get+++++', this.dataAll)
+      this.onCallMatTableDaily()
+      this.onCallMatTableMonthly()
     })
 
   }
 
-  onCallMatTable() {
+  onCallMatTableDaily() {
     this.dailyDataSource = new MatTableDataSource(this.dataAll);
-    // this.dailyDataSource = new BehaviorSubject;
     this.dailyDataSource.paginator = this.paginator;
     this.dailyDataSource.sort = this.sort;
+  }
+
+  onCallMatTableMonthly() {
     this.monthlyDataSource = new MatTableDataSource(this.monthlyData);
-    this.monthlyDataSource.paginator = this.paginator;
+    this.monthlyDataSource.paginator = this.paginator2;
     this.monthlyDataSource.sort = this.sort;
   }
 
@@ -229,7 +247,6 @@ export class AccountComponent implements OnInit {
   onCreate() {
     let temp = this.addForm.value
     console.log('temp', temp)
-    // this.sum += parseInt(temp.incomeInput) - parseInt(temp.expenseInput)
     this.input = {
       description: temp.description,
       cost: temp.cost,
@@ -241,17 +258,25 @@ export class AccountComponent implements OnInit {
 
     this.dataService.onAddAcDb(this.input).then(res => {
       console.log('add+++++', res)
-      this.addForm.reset()
+
       //set val for income just for getting rid of val in inputs and clear validator but want to defualt cost flag
-      this.addForm.controls['flag'].setValue("income")
+      //this.addForm.controls['flag'].setValue("income")
+
 
     })
+    //this.addForm.reset()
+    this.formDirective.resetForm();
+    //set val for income just for getting rid of val in inputs and clear validator but want to defualt cost flag
+    this.addForm.controls['flag'].setValue("income")
     this.onGetInput()
+    console.log("after shooting create", this.addForm.value);
+
+    //this.addForm.controls['flag'].setValue("income")
   }
 
   async openDialogEdit(id) {
     this.idEditData = id
-    console.log("idEditDataidEditDataidEditData", this.idEditData);
+    //console.log("idEditDataidEditDataidEditData", this.idEditData);
 
     const dialogRef = this.dialog.open(DialogEditAccountComponent, {
       width: '500px',
@@ -267,44 +292,6 @@ export class AccountComponent implements OnInit {
       console.log('The dialog was closed');
     });
   }
-
-  // onRememIdEdit(data) {
-  //   console.log("dar dra", data)
-  //   let tempAdd = data
-
-  //   this.editForm.controls['flag'].setValue(tempAdd.flag)
-  //   this.editForm.controls['cost'].setValue(tempAdd.cost)
-  //   this.editForm.controls['description'].setValue(tempAdd.description);
-  //   this.editForm.controls['date'].setValue(moment(tempAdd.date).format('YYYY-MM-DD'));
-  //   this.idEditData = tempAdd.id
-  //   //console.log("temp edit", this.idEditData)
-  // }
-
-  // async onUpdate() {
-  //   let temp = this.editForm.value
-  //   console.log('iii', temp)
-  //   this.input = {
-  //     description: temp.description,
-  //     cost: temp.cost,
-  //     flag: temp.flag,
-  //     //showing date
-  //     date: temp.date,
-  //     updatedDate: this.onGetCurrentDate(),
-  //   }
-  //   console.log("ready data to updte", this.input)
-  //   await this.dataService.onUpdateAcDb(this.input, this.idEditData).then(res => {
-  //     $('#editList').modal('hide')
-  //     console.log('res update', res)
-  //   })
-  //   await this.onGetInput()
-  // }
-
-
-  // onRememId(id) {
-  //   this.idDelData = id
-  //   console.log("remember id:::", this.idDelData)
-  // }
-
 
   async openDialogDelete(id) {
     this.idDeleteData = id
@@ -327,22 +314,10 @@ export class AccountComponent implements OnInit {
 
   }
 
-  // onDelete() {
-  //   let id = this.idDelData
-  //   this.dataService.onDeleteAcDb(id).then(res => {
-  //     console.log('res delete', res)
-  //     $('#deleteList').modal('hide')
-  //   })
-  //   this.onGetInput()
-  //   this.onCallMatTable()
-  // }
-
-
   onCheckEmptyInput() {
     if (this.addForm.value.incomeInput == '') this.addForm.controls['incomeInput'].setValue(0)
     if (this.addForm.value.expenseInput == '') this.addForm.controls['expenseInput'].setValue(0)
   }
-
 
   onShowDisplayDelete() {
     this.displayDeleteList = "block"

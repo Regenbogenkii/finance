@@ -21,7 +21,7 @@ export class DialogDeleteAccountComponent implements OnInit {
   }
 
   onOk() {
-    console.log("delete list by id", this.deleteData);
+    //console.log("delete list by id", this.deleteData);
 
     this.dataService.onDeleteAcDb(this.deleteData.id).then(res => {
 

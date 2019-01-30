@@ -5,50 +5,43 @@
   <div class="inputAccount mt-4">
     <form [formGroup]="addForm" (ngSubmit)=" onCreate()">
       <div class="col-sm-12 col-lg-6">
-        <!-- <div class="custom-control custom-radio custom-control-inline ">
-          <input type="radio" id="checkIncome" formControlName="flag" value="income" name="flag" class="custom-control-input ">
-          <label class="custom-control-label" for="checkIncome">Income</label>
-        </div>
-        <div class="custom-control custom-radio custom-control-inline">
-          <input type="radio" id="checkExpense" formControlName="flag" value="expense" name="flag" class="custom-control-input">
-          <label class="custom-control-label" for="checkExpense">Expense</label>
-        </div> -->
         <mat-radio-group class="example-radio-group" formControlName="flag">
           <mat-radio-button class="example-radio-button mr-3" *ngFor="let flag of flags" [value]="flag">
             {{flag}}
           </mat-radio-button>
         </mat-radio-group>
       </div>
-      <div class="row mt-2">
 
+      <div class="row mt-2">
         <div class="col-sm-12 col-lg-12">
           <span>
             <label class="badge badge-pill badge-info" *ngIf="addForm.value.flag =='income'">Income</label>
             <label class="badge badge-pill badge-danger" *ngIf="addForm.value.flag =='expense'">Expense</label>
-            <!-- <input class="form-control" type="text" formControlName="description" placeholder="Description" required>
-            <input class="form-control mt-1" type="text" formControlName="cost" onkeypress="return(event.charCode >= '48'&& event.charCode <= '58')" placeholder="cost (It must be number)" required> -->
+            <div class="row">
+            <div class="col-sm-6">
             <mat-form-field appearance="outline">
               <mat-label>Description</mat-label>
-              <input matInput placeholder="Description" formControlName="description" required>
-              <!-- <mat-hint>Don't disclose this info</mat-hint> -->
+              <input matInput placeholder="Description" formControlName="description" >
             </mat-form-field>
+            </div>
+            <div class="col-sm-4">
             <mat-form-field appearance="outline">
               <mat-label>Cost</mat-label>
-              <input matInput placeholder="Cost" formControlName="cost" onkeypress="return(event.charCode >= '48'&& event.charCode <= '58')" placeholder="cost (It must be number)" required>
-              <!-- <mat-hint>Don't disclose this info</mat-hint> -->
+              <input matInput placeholder="Cost" formControlName="cost" onkeypress="return(event.charCode >= '48'&& event.charCode <= '58')" placeholder="cost (It must be number)" >
             </mat-form-field>
-          
-          
+            </div>
+            <div class="col-sm-1 mt-2 ml-5">
+            <button type="submit" class="btn btn-primary pull-right" [disabled]="!addForm.valid">
+                <span class="d-flex"><mat-icon class="mr-1">create</mat-icon> <div class="">Create</div> </span> </button>
+                </div>
+            </div>
             <div *ngIf="addForm.invalid && addForm.touched" class="alert alert-danger">
               <p>* Fields are required!</p>
             </div>
           </span>
-          
-
         </div>
-
       </div>
-
+<!-- 
       <div class="row">
         <div class="col-sm-12 mt-2 ">
          
@@ -56,182 +49,101 @@
                <span class="d-flex"><mat-icon class="mr-1">create</mat-icon> <div class="">Create</div> </span> </button>
          
         </div>
-      </div>
+      </div> -->
 
     </form>
   </div>
   <hr class="my-4">
-  <!-- daily tab -->
-  <nav>
-    <div class="nav nav-tabs" id="nav-tab" role="tablist">
-      <a class="nav-item nav-link active" id="nav-home-tab" data-toggle="tab" href="#nav-daily" role="tab" aria-controls="nav-home"
-        aria-selected="true">Daily</a>
-      <a class="nav-item nav-link" id="nav-profile-tab" data-toggle="tab" href="#nav-monthly" role="tab" aria-controls="nav-profile"
-        aria-selected="false">Monthly</a>
+  <mat-tab-group #tabGroup (selectedIndexChange)="setDataSource($event)">
+      <!-- daily tab -->
+      <mat-tab label="Daily">
+              <div class="row mt-3 ml-1 pr-5 pull-right">
+                <h3 [ngStyle]="{'color':sumTotal >= 0 ? 'green' : 'red' }">Total {{this.sumTotal | number}} Baht</h3>
+              </div>
+              <mat-form-field>
+                <input matInput (keyup)="onApplyFilterDaily($event.target.value)" placeholder="Filter">
+              </mat-form-field>
+              <table #table mat-table [dataSource]="dailyDataSource" class="mat-elevation-z8" matSort>
+        
+                <ng-container matColumnDef="date">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header> Date </th>
+                  <td mat-cell *matCellDef="let element"> {{element.date| date: 'dd MMM yyyy'}} </td>
+                </ng-container>
+        
+                <ng-container matColumnDef="description">
+                  <th mat-header-cell *matHeaderCellDef> description </th>
+                  <td mat-cell *matCellDef="let element"> {{element.description}} </td>
+                </ng-container>
+        
+                <ng-container matColumnDef="cost">
+                  <th mat-header-cell *matHeaderCellDef mat-sort-header> Cost </th>
+                  <td mat-cell *matCellDef="let element"> {{element.cost}} </td>
+                </ng-container>
+        
+                <ng-container matColumnDef="action">
+                  <th mat-header-cell *matHeaderCellDef> Action </th>
+                  <td mat-cell *matCellDef="let element">
+                    <button type="button" class="btn btn-light " (click)="openDialogEdit(element.id)">
+                      <i class="fa fas fa-pencil"></i>
+                    </button> &nbsp;
+                    <button type="button" class="btn btn-light "  (click)="openDialogDelete(element.id)">
+                      <i class="fa fas fa-trash"></i>
+                    </button>
+                  </td>
+                </ng-container>
+        
+                <tr mat-header-row *matHeaderRowDef="displayedDailyColumns; sticky: true"></tr>
+                <tr mat-row *matRowDef="let row; columns: displayedDailyColumns;"></tr>
+        
+              </table>
+              <mat-paginator #paginator [pageSizeOptions]="[5, 10, 25, 100]"  showFirstLastButtons></mat-paginator>
+      </mat-tab>
+      <mat-tab label="Monthly">
+        <!-- monthly tab -->
 
-    </div>
-  </nav>
-
-  <div class="tab-content" id="nav-tabContent">
-    <div class="tab-pane fade show active" id="nav-daily" role="tabpanel" aria-labelledby="nav-home-tab">
-      <div class="row mt-3 ml-1 pull-right">
-        <h3 [ngStyle]="{'color':sumTotal >= 0 ? 'green' : 'red' }">Total {{this.sumTotal | number}} Baht</h3>
-      </div>
-      <mat-form-field>
-        <input matInput (keyup)="onApplyFilterDaily($event.target.value)" placeholder="Filter">
-      </mat-form-field>
-      <table mat-table [dataSource]="dailyDataSource" class="mat-elevation-z8" matSort>
-
-        <ng-container matColumnDef="date">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header> Date </th>
-          <td mat-cell *matCellDef="let element"> {{element.date| date: 'dd MMM yyyy'}} </td>
-        </ng-container>
-
-        <ng-container matColumnDef="description">
-          <th mat-header-cell *matHeaderCellDef> description </th>
-          <td mat-cell *matCellDef="let element"> {{element.description}} </td>
-        </ng-container>
-
-        <ng-container matColumnDef="cost">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header> Cost </th>
-          <td mat-cell *matCellDef="let element"> {{element.cost}} </td>
-        </ng-container>
-
-        <ng-container matColumnDef="action">
-          <th mat-header-cell *matHeaderCellDef> Action </th>
-          <td mat-cell *matCellDef="let element">
-            <button type="button" class="btn btn-light " (click)="openDialogEdit(element.id)">
-              <i class="fa fas fa-pencil"></i>
-            </button> &nbsp;
-            <button type="button" class="btn btn-light "  (click)="openDialogDelete(element.id)">
-              <i class="fa fas fa-trash"></i>
-            </button>
-          </td>
-        </ng-container>
-
-        <tr mat-header-row *matHeaderRowDef="displayedDailyColumns; sticky: true"></tr>
-        <tr mat-row *matRowDef="let row; columns: displayedDailyColumns;"></tr>
-
-      </table>
-      <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]" (page)="pageEvent = $event" showFirstLastButtons></mat-paginator>
-
-    </div>
-
-    <!-- monthly tab -->
-    <div class="tab-pane fade" id="nav-monthly" role="tabpanel" aria-labelledby="nav-profile-tab">
-      <div class="row mt-3 pull-right">
-        <h3 [ngStyle]="{'color':totalBalance >= 0 ? 'green' : 'red' }">Total {{this.totalBalance | number}} Baht</h3>
-      </div>
-
-      <mat-form-field>
-        <input matInput (keyup)="onApplyFilterMonthly($event.target.value)" placeholder="Filter">
-      </mat-form-field>
-      <table mat-table [dataSource]="monthlyDataSource" class="mat-elevation-z8" matSort>
-
-
-        <ng-container matColumnDef="year">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header> Year </th>
-          <td mat-cell *matCellDef="let element"> {{element.year}} </td>
-        </ng-container>
-
-        <ng-container matColumnDef="month">
-          <th mat-header-cell *matHeaderCellDef> month </th>
-          <td mat-cell *matCellDef="let element"> {{element.month}} </td>
-        </ng-container>
-
-        <ng-container matColumnDef="income">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header> Income </th>
-          <td mat-cell *matCellDef="let element"> {{element.income}} </td>
-        </ng-container>
-
-        <ng-container matColumnDef="expense">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header> Expense </th>
-          <td mat-cell *matCellDef="let element"> {{element.expense}} </td>
-        </ng-container>
-
-        <ng-container matColumnDef="balance">
-          <th mat-header-cell *matHeaderCellDef mat-sort-header> Balance </th>
-          <td mat-cell *matCellDef="let element"> {{element.balance}} </td>
-        </ng-container>
-
-        <tr mat-header-row *matHeaderRowDef="displayedMontlyColumns; sticky: true"></tr>
-        <tr mat-row *matRowDef="let row; columns: displayedMontlyColumns;"></tr>
-
-      </table>
-      <mat-paginator [pageSizeOptions]="[5, 10, 25, 100]" (page)="pageEvent = $event" showFirstLastButtons></mat-paginator>
-
-    </div>
-  </div>
+        <div class="row mt-3 pr-5 pull-right">
+          <h3 [ngStyle]="{'color':totalBalance >= 0 ? 'green' : 'red' }">Total {{this.totalBalance | number}} Baht</h3>
+        </div>
+  
+        <mat-form-field>
+          <input matInput (keyup)="onApplyFilterMonthly($event.target.value)" placeholder="Filter">
+        </mat-form-field>
+        <table #table mat-table [dataSource]="monthlyDataSource" class="mat-elevation-z8" matSort>
+  
+  
+          <ng-container matColumnDef="year">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Year </th>
+            <td mat-cell *matCellDef="let element"> {{element.year}} </td>
+          </ng-container>
+  
+          <ng-container matColumnDef="month">
+            <th mat-header-cell *matHeaderCellDef> month </th>
+            <td mat-cell *matCellDef="let element"> {{element.month}} </td>
+          </ng-container>
+  
+          <ng-container matColumnDef="income">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Income </th>
+            <td mat-cell *matCellDef="let element"> {{element.income}} </td>
+          </ng-container>
+  
+          <ng-container matColumnDef="expense">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Expense </th>
+            <td mat-cell *matCellDef="let element"> {{element.expense}} </td>
+          </ng-container>
+  
+          <ng-container matColumnDef="balance">
+            <th mat-header-cell *matHeaderCellDef mat-sort-header> Balance </th>
+            <td mat-cell *matCellDef="let element"> {{element.balance}} </td>
+          </ng-container>
+  
+          <tr mat-header-row *matHeaderRowDef="displayedMontlyColumns; sticky: true"></tr>
+          <tr mat-row *matRowDef="let row; columns: displayedMontlyColumns;"></tr>
+  
+        </table>
+        <mat-paginator #paginator2 [pageSizeOptions]="[5, 10, 25, 100]"  showFirstLastButtons></mat-paginator>
+  
+      
+      </mat-tab>
+    </mat-tab-group>
 
 </div>
-
-
-<!-- modal -->
-<!-- <div class="modal fade" id="deleteList" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-        <h5 class="modal-title">Delete list</h5>
-        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>
-      </div>
-      <div class="modal-body">
-        <p>Are you sure You want to delete this?</p>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-danger" (click)="onDelete()">Delete</button>
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-      </div>
-    </div>
-  </div>
-</div> -->
-
-<!-- <div class="modal fade" id="editList" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog" role="document">
-    <form [formGroup]="editForm" (ngSubmit)=" onUpdate()">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h5 class="modal-title">Edit list</h5>
-          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <div class="modal-body">
-          <div class="">
-
-            <div class="col-sm-12 col-lg-6">
-              <div class="custom-control custom-radio custom-control-inline ">
-                <input type="radio" id="checkIncomeEdit" formControlName="flag" value="income" name="flag" class="custom-control-input ">
-                <label class="custom-control-label" for="checkIncomeEdit">Income</label>
-              </div>
-              <div class="custom-control custom-radio custom-control-inline">
-                <input type="radio" id="checkExpenseEdit" formControlName="flag" value="expense" name="flag" class="custom-control-input">
-                <label class="custom-control-label" for="checkExpenseEdit">Expense</label>
-              </div>
-            </div>
-            <div class="row mt-2">
-
-              <div class="col-sm-12 col-lg-12">
-   
-                  <mat-form-field>
-                      <input matInput [matDatepicker]="picker" formControlName="date" placeholder="Choose a date">
-                      <mat-datepicker-toggle matSuffix [for]="picker"></mat-datepicker-toggle>
-                      <mat-datepicker #picker></mat-datepicker>
-                    </mat-form-field>
-                </span>
-
-              </div>
-
-            </div>
-
-          </div>
-        </div>
-        <div class="modal-footer">
-          <button type="submit" class="btn btn-danger"  [disabled]="!editForm.valid" >Update</button>
-          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-        </div>
-      </div>
-    </form>
-  </div>
-</div> -->

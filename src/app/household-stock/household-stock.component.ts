@@ -176,7 +176,7 @@ export class HouseholdStockComponent implements OnInit {
 
   async openDialogEdit(id) {
     this.idEditData = id
-    console.log("idEditDataidEditDataidEditData", this.idEditData);
+    //console.log("idEditDataidEditDataidEditData", this.idEditData);
 
     const dialogRef = this.dialog.open(DialogEditComponent, {
       width: '500px',
@@ -196,7 +196,7 @@ export class HouseholdStockComponent implements OnInit {
 
   async openDialogDelete(id) {
     this.idDeleteData = id
-    console.log("idDeleteDataidDeleteDataidDeleteDataidDeleteData", this.idDeleteData);
+    //console.log("idDeleteDataidDeleteDataidDeleteDataidDeleteData", this.idDeleteData);
 
     const dialogRef = this.dialog.open(DialogDeleteComponent, {
       width: '500px',
