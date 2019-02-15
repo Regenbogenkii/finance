@@ -1,24 +1,2 @@
 
-  <div class="topnav nav navbar-nav" id="myTopnav">
-    <a><img width="40" style="margin-top: -15px; margin-bottom: -11px;" alt="Angular Logo" src="../assets/img/logo2.PNG"></a>
-    <a  [routerLinkActive]="['active']" routerLink="/finance" class="active">My Account</a>
-    <a [routerLinkActive]="['active']" routerLink="/householdStock" >Household Stock</a>
-    <a [routerLinkActive]="['active']" routerLink="/todoList">Todo List</a>
-    <a [routerLinkActive]="['active']">Share (coming soon)</a>
-    <a [routerLinkActive]="['active']">About (coming soon)</a>
-    <a class="icon" (click)="myNavbar()">
-      <i class="fa fa-bars"></i>
-    </a>
-  </div>
-<!--The content below is only a placeholder and can be replaced.-->
-<div style="text-align:center">
-  <!-- <h1>
-    Welcome to {{ title }}
-  </h1> -->
-  <!-- <img width="200" alt="Angular Logo" src="../assets/img/logo.PNG"> -->
-</div>
-
-<div class="mt-4">
-
 <router-outlet></router-outlet>
-</div>

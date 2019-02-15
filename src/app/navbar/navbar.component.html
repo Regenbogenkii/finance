@@ -1,0 +1,15 @@
+
+  <div class="topnav nav navbar-nav" id="myTopnav">
+      <a><img width="40" style="margin-top: -15px; margin-bottom: -11px;" alt="Angular Logo" src="../assets/img/logo2.PNG"></a>
+      <a  [routerLinkActive]="['active']" routerLink="/finance" >My Account</a>
+      <a [routerLinkActive]="['active']" routerLink="/householdStock" >Household Stock</a>
+      <a [routerLinkActive]="['active']" routerLink="/todoList">Todo List</a>
+      <a [routerLinkActive]="['active']">Share (coming soon)</a>
+      <a [routerLinkActive]="['active']">About (coming soon)</a>
+      <button mat-raised-button (click)="onSignOut()" class="mt-2 mr-1 pull-right">Logout</button>
+      <!-- <button (click)="onSignOut()" class="pull-right">Logout</button> -->
+      <a class="icon" (click)="myNavbar()">
+        <i class="fa fa-bars"></i>
+      </a>
+    </div>
+    <router-outlet></router-outlet>

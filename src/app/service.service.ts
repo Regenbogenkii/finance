@@ -1,5 +1,6 @@
 import { Injectable } from '@angular/core';
 import * as firebase from 'firebase/app';
+
 @Injectable({
   providedIn: 'root'
 })
@@ -7,6 +8,7 @@ export class ServiceService {
   accountColName = "accounts"
   stockColName = "Stock"
   todolistName = "todolists"
+  userProfileName = "users"
   // Initialize Cloud Firestore through Firebase
   db = firebase.firestore();
 
@@ -21,7 +23,7 @@ export class ServiceService {
   // CRUD method for account feature
   async onGetAcDb() {
     let data = []
-    await this.db.collection(this.accountColName)
+    await this.db.collection(this.accountColName).where("createBy", "==", this.onGetUid())
       .get()
       .then(function (querySnapshot) {
         querySnapshot.forEach(function (doc) {
@@ -43,31 +45,35 @@ export class ServiceService {
     let data = null
     await this.db.collection(this.accountColName).doc(id)
       .get()
-      .then(function(doc) {
+      .then(function (doc) {
         if (doc.exists) {
           data = doc.data()
-            //console.log("Document data:", doc.data());
+          //console.log("Document data:", doc.data());
         } else {
-            // doc.data() will be undefined in this case
-            console.log("No such document!");
+          // doc.data() will be undefined in this case
+          console.log("No such document!");
         }
-    }).catch(function(error) {
+      }).catch(function (error) {
         console.log("Error getting document:", error);
-    });
+      });
     return data
   }
 
   onAddAcDb(data) {
     console.log('added')
-    return this.db.collection(this.accountColName)
-      .add(data)
-      .then(function (docRef) {
-        console.log("Document written with ID: ", docRef.id);
+    return new Promise<any>((resolve, reject) => {
+      this.db.collection(this.accountColName)
+        .add(data)
+        .then(function (docRef) {
+          console.log("Document written with ID: ", docRef.id);
+          resolve(docRef)
+        })
+        .catch(function (error) {
+          resolve(error)
+          console.error("Error adding document: ", error);
+        });
 
-      })
-      .catch(function (error) {
-        console.error("Error adding document: ", error);
-      });
+    })
   }
 
   onUpdateAcDb(data, id) {
@@ -96,7 +102,7 @@ export class ServiceService {
   // CRUD method for stock feature
   async onGetStDb() {
     let data = []
-    await this.db.collection(this.stockColName)
+    await this.db.collection(this.stockColName).where("createBy", "==", this.onGetUid())
       .get()
       .then(function (querySnapshot) {
         querySnapshot.forEach(function (doc) {
@@ -118,17 +124,17 @@ export class ServiceService {
     let data = null
     await this.db.collection(this.stockColName).doc(id)
       .get()
-      .then(function(doc) {
+      .then(function (doc) {
         if (doc.exists) {
           data = doc.data()
-            //console.log("Document data:", doc.data());
+          //console.log("Document data:", doc.data());
         } else {
-            // doc.data() will be undefined in this case
-            console.log("No such document!");
+          // doc.data() will be undefined in this case
+          console.log("No such document!");
         }
-    }).catch(function(error) {
+      }).catch(function (error) {
         console.log("Error getting document:", error);
-    });
+      });
     return data
   }
 
@@ -172,7 +178,7 @@ export class ServiceService {
   // CRUD method for todoList feature
   async onGetTdlDb() {
     let data = []
-    await this.db.collection(this.todolistName)
+    await this.db.collection(this.todolistName).where("createBy", "==", this.onGetUid())
       .get()
       .then(function (querySnapshot) {
         querySnapshot.forEach(function (doc) {
@@ -226,4 +232,123 @@ export class ServiceService {
         console.error("Error removing document: ", error);
       });
   }
+
+
+  onSetUid(uid) {
+    localStorage.setItem("uid", uid);
+  }
+
+  onGetUid() {
+    return localStorage.getItem("uid");
+  }
+
+  onRemoveUid() {
+    localStorage.removeItem("uid");
+    console.log("remove uid");
+
+  }
+
+  onSignUp(data) {
+    return new Promise<any>((resolve, reject) => {
+      firebase.auth().createUserWithEmailAndPassword(data.email, data.password)
+        .then(res => {
+          resolve(res);
+        }, err => reject(err))
+    })
+  }
+
+  onSignIn(data) {
+    return new Promise<any>((resolve, reject) => {
+      firebase.auth().signInWithEmailAndPassword(data.email, data.password)
+        .then(res => {
+          resolve(res);
+        }, err => reject(err))
+    })
+  }
+
+  onSignOut() {
+    let self = this
+    return new Promise<any>((resolve, reject) => {
+      firebase.auth().signOut().then(res => {
+        console.log("Sign-out successful.");
+        self.onRemoveUid()
+        resolve(res)
+      }, err => {
+        resolve(err)
+      })
+    })
+  }
+
+
+  onCheckAuthState() {
+    return new Promise<any>((resolve, reject) => {
+      firebase.auth().onAuthStateChanged(function (user) {
+        if (user) {
+          // User is signed in.
+          var displayName = user.displayName;
+          var email = user.email;
+          var emailVerified = user.emailVerified;
+          var photoURL = user.photoURL;
+          var isAnonymous = user.isAnonymous;
+          var uid = user.uid;
+          var providerData = user.providerData;
+          resolve(true)
+        } else {
+          resolve(false)
+        }
+      })
+
+    })
+  }
+
+  //create profile after sign up succcessfully
+  onCreateUserProfile(data) {
+    return this.db.collection(this.userProfileName)
+      .add(data)
+      .then(function (docRef) {
+        console.log("Document written with ID: ", docRef.id);
+
+      })
+      .catch(function (error) {
+        console.error("Error adding document: ", error);
+      });
+  }
+
+  async onGetUserProfile() {
+    let data = []
+    await this.db.collection(this.userProfileName)
+      .get()
+      .then(function (querySnapshot) {
+        querySnapshot.forEach(function (doc) {
+          let temp = doc.data()
+          temp.id = doc.id
+          data.push(temp)
+
+        });
+        //console.log('data data::', data)
+      })
+
+      .catch(function (error) {
+        console.log("Error getting documents: ", error);
+      });
+    return data
+  }
+
+  async onGetUserProfileByUid(uid) {
+    let data
+    await this.db.collection(this.userProfileName).where("uid", "==", uid)
+      .get()
+      .then(function (querySnapshot) {
+        querySnapshot.forEach(function (doc) {
+          // doc.data() is never undefined for query doc snapshots
+          console.log(doc.id, " => ", doc.data());
+          data = doc.data()
+        });
+      })
+      .catch(function (error) {
+        console.log("Error getting documents: ", error);
+      });
+    return data
+  }
+
 }

@@ -28,6 +28,7 @@ export class DialogEditComponent implements OnInit {
   }
 
   async ngOnInit() {
+    this.dataService.onGetUid()
     await this.createForm()
     this.editForm.controls['name'].setValue(this.dataById.info.name)
     this.editForm.controls['amount'].setValue(this.dataById.info.amount)

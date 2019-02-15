@@ -1,4 +1,4 @@
-<div class="container">
+<div class="container mt-5">
   <h4 class="text-center">
     <b>Manage my expension</b>
   </h4>
@@ -18,45 +18,50 @@
             <label class="badge badge-pill badge-info" *ngIf="addForm.value.flag =='income'">Income</label>
             <label class="badge badge-pill badge-danger" *ngIf="addForm.value.flag =='expense'">Expense</label>
             <div class="row">
-            <div class="col-sm-6">
+            <div class="col-xs-12 col-sm-12 col-md-6">
             <mat-form-field appearance="outline">
               <mat-label>Description</mat-label>
               <input matInput placeholder="Description" formControlName="description" >
+              <mat-hint *ngIf="addForm.value.description == null || addForm.value.description == '' && addForm.touched">* Field is required!</mat-hint>
             </mat-form-field>
             </div>
-            <div class="col-sm-4">
+            <div class="col-xs-12 col-sm-12 col-md-4">
             <mat-form-field appearance="outline">
               <mat-label>Cost</mat-label>
-              <input matInput placeholder="Cost" formControlName="cost" onkeypress="return(event.charCode >= '48'&& event.charCode <= '58')" placeholder="cost (It must be number)" >
+              <input matInput placeholder="Cost" formControlName="cost"  (change)="checkDec(addForm.value.cost)" onkeypress="return((event.keyCode == 46) || event.keyCode >= 48 && event.keyCode <= 57)" placeholder="cost (It must be number)">
+              <mat-hint *ngIf="addForm.value.cost == null || addForm.value.cost == '' && addForm.touched">* Field is required!</mat-hint>
             </mat-form-field>
             </div>
-            <div class="col-sm-1 mt-2 ml-5">
-            <button type="submit" class="btn btn-primary pull-right" [disabled]="!addForm.valid">
-                <span class="d-flex"><mat-icon class="mr-1">create</mat-icon> <div class="">Create</div> </span> </button>
-                </div>
-            </div>
-            <div *ngIf="addForm.invalid && addForm.touched" class="alert alert-danger">
-              <p>* Fields are required!</p>
+            <div class="col-xs-12 col-sm-12 col-md-2 mt-2 ">
+                <button  type="submit" mat-raised-button  class="theme-color pull-right" [disabled]= "addForm.invalid"><mat-icon class="mr-1">create</mat-icon>Create</button>
+                
+              </div>
             </div>
           </span>
         </div>
       </div>
-<!-- 
-      <div class="row">
-        <div class="col-sm-12 mt-2 ">
-         
-          <button type="submit" class="btn btn-primary pull-right" [disabled]="!addForm.valid">
-               <span class="d-flex"><mat-icon class="mr-1">create</mat-icon> <div class="">Create</div> </span> </button>
-         
-        </div>
-      </div> -->
-
     </form>
+    <div class="row mt-2">
+        <div class="col-xs-12 col-sm-12 col-md-12">
+        <div>
+          <span>
+              <input type="file" accept=".jpg ,.jpeg ,.png" id="uploadCaptureInputFile" class="upload" (change)="onSelectFile($event)" >
+            <mat-progress-bar mode="buffer" *ngIf="showProgressBar"></mat-progress-bar>
+        </span>
+      </div>
+      </div>
+
+    </div>
+    <!-- <button mat-raised-button  class="theme-color pull-right" (click)="onUpload()"><mat-icon class="mr-1">create</mat-icon>Upload</button> -->
   </div>
-  <hr class="my-4">
+
+  <hr class="my-4 mt-5">
+
   <mat-tab-group #tabGroup (selectedIndexChange)="setDataSource($event)">
+
       <!-- daily tab -->
       <mat-tab label="Daily">
+          <div style="overflow:hidden">
               <div class="row mt-3 ml-1 pr-5 pull-right">
                 <h3 [ngStyle]="{'color':sumTotal >= 0 ? 'green' : 'red' }">Total {{this.sumTotal | number}} Baht</h3>
               </div>
@@ -83,12 +88,18 @@
                 <ng-container matColumnDef="action">
                   <th mat-header-cell *matHeaderCellDef> Action </th>
                   <td mat-cell *matCellDef="let element">
-                    <button type="button" class="btn btn-light " (click)="openDialogEdit(element.id)">
-                      <i class="fa fas fa-pencil"></i>
-                    </button> &nbsp;
-                    <button type="button" class="btn btn-light "  (click)="openDialogDelete(element.id)">
-                      <i class="fa fas fa-trash"></i>
+                    <button type="button" mat-icon-button (click)="openDialogEdit(element.id)">
+                      <mat-icon>create</mat-icon>
                     </button>
+                    <button type="button" mat-icon-button  (click)="openDialogDelete(element.id)">
+                      <mat-icon>delete</mat-icon>
+                    </button>
+                    <button *ngIf="!element.downLoadUrl" type="button" mat-icon-button (click)="openDialogUpload(element.id)">
+                       <mat-icon>cloud</mat-icon>
+                    </button>
+                    <button *ngIf="element.downLoadUrl" type="button" mat-icon-button (click)="openDialogPhoto(element.id)">
+                      <mat-icon >photo</mat-icon>
+                   </button>
                   </td>
                 </ng-container>
         
@@ -97,8 +108,10 @@
         
               </table>
               <mat-paginator #paginator [pageSizeOptions]="[5, 10, 25, 100]"  showFirstLastButtons></mat-paginator>
+            </div>
       </mat-tab>
       <mat-tab label="Monthly">
+          <div style="overflow:hidden">
         <!-- monthly tab -->
 
         <div class="row mt-3 pr-5 pull-right">
@@ -142,8 +155,9 @@
         </table>
         <mat-paginator #paginator2 [pageSizeOptions]="[5, 10, 25, 100]"  showFirstLastButtons></mat-paginator>
   
-      
+          </div>
       </mat-tab>
+
     </mat-tab-group>
 
 </div>

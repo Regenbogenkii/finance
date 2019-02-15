@@ -9,8 +9,8 @@ import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/materia
 import { SelectionModel } from '@angular/cdk/collections';
 import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material';
 import * as moment from 'moment'
-import { DialogEditComponent } from '../dialog-edit/dialog-edit.component'
-import { DialogDeleteComponent } from '../dialog-delete/dialog-delete.component'
+import { DialogEditComponent } from '../dialog-edit-stock-list/dialog-edit.component'
+import { DialogDeleteComponent } from '../dialog-delete-stock-list/dialog-delete.component'
 import { DialogShoppingComponent } from '../dialog-shopping/dialog-shopping.component'
 import { DialogAlertNoShoppingListComponent } from '../dialog-alert-no-shopping-list/dialog-alert-no-shopping-list.component'
 
@@ -39,6 +39,7 @@ export const MY_FORMATS = {
   ],
 })
 export class HouseholdStockComponent implements OnInit {
+  userUid
   name
   amount
   displayedColumns: string[] = ['select', 'name', 'amount', 'status', 'action'];
@@ -57,6 +58,7 @@ export class HouseholdStockComponent implements OnInit {
   selectedId
   shoppingId
   stockId
+  show = false
   disabled = false
   disabledBtn = true
   idDeleteData
@@ -70,6 +72,7 @@ export class HouseholdStockComponent implements OnInit {
   }
 
   async ngOnInit() {
+    this.userUid = this.dataService.onGetUid()
     this.createForm()
     await this.onGetStock()
     this.onGetTodoList()
@@ -98,9 +101,11 @@ export class HouseholdStockComponent implements OnInit {
       res.map(ele => {
         ele.checked = false
         if (ele.status == "ok") {
+          ele.show = true
           ele.disabled = false
           ele.showCartIcon = false
         } else if (ele.status == "on_shopping") {
+          ele.show = false
           ele.disabled = true
           ele.showCartIcon = true
         }
@@ -111,11 +116,17 @@ export class HouseholdStockComponent implements OnInit {
       })
 
     })
-    this.dataStock = new MatTableDataSource(this.dataAll);
+    this.onCallMatTableStock()
     this.selection = new SelectionModel(true, []);
 
   }
 
+  
+  onCallMatTableStock() {
+    this.dataStock = new MatTableDataSource(this.dataAll);
+    this.dataStock.paginator = this.paginator;
+    this.dataStock.sort = this.sort;
+  }
 
   onGetStockById() {
     console.log("this.idEditDatathis.idEditDatathis.idEditData", this.idEditData);
@@ -142,7 +153,8 @@ export class HouseholdStockComponent implements OnInit {
       amount: tempData.amount,
       order: 0,
       category: tempData.category,
-      status: this.shoppingStatus
+      status: this.shoppingStatus,
+      createBy: this.userUid
     }
     console.log("tempData", tempData);
 

@@ -1,13 +1,13 @@
 export const environment = {
   production: true,
-  // Initialize Firebase
+  // Initialize Firebase testing
   firebaseConfig: {
-    apiKey: "AIzaSyBMcbl361Ds6uYqEUAsYM5KfbRpilGTeMI",
-    authDomain: "angularwithfirebase-e4b84.firebaseapp.com",
-    databaseURL: "https://angularwithfirebase-e4b84.firebaseio.com",
-    projectId: "angularwithfirebase",
-    storageBucket: "angularwithfirebase.appspot.com",
-    messagingSenderId: "150924220823"
+    apiKey: "AIzaSyC3974FSzNPf2YjURnssihH-43BUrGDMRA",
+    authDomain: "angularapptest-c3f99.firebaseapp.com",
+    databaseURL: "https://angularapptest-c3f99.firebaseio.com",
+    projectId: "angularapptest-c3f99",
+    storageBucket: "angularapptest-c3f99.appspot.com",
+    messagingSenderId: "557061443377"
   }
 };
 

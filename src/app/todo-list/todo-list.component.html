@@ -1,26 +1,18 @@
-<mat-card class="shopping-card">
+<div class="container">
+<div class="row mt-5">
+<div class="col-lg-6">
+<mat-card class="shopping-card" *ngIf="showShopCard">
   <mat-card-header>
     <div mat-card-avatar ><mat-icon>shopping_cart</mat-icon></div>
     <mat-card-title>Shopping List</mat-card-title>
   </mat-card-header>
-  
   <mat-card-content>
-    <!-- <mat-list role="list">
-      <mat-list-item role="listitem" *ngFor="let item of dataAll">{{item.name}} : {{item.order}}</mat-list-item>
-
-    </mat-list> -->
-
-    <mat-table [dataSource]="todoListData" class="mat-elevation-z8">
-
+    <mat-table [dataSource]="stockListData" class="mat-elevation-z8">
         <ng-container matColumnDef="select">
             <th mat-header-cell *matHeaderCellDef>
-                <!-- <mat-checkbox (change)="$event ? masterToggle() : null"
-                [checked]="selection && isAllSelected() && onSelectList()"
-                [indeterminate]="selection && !isAllSelected() && !onSelectList()">
-                </mat-checkbox> -->
             </th>
             <td mat-cell *matCellDef="let row">
-                <mat-checkbox   (change)="onSelectList(row.id); onEnableArchieve()"   [checked]= "row.checked" >
+                <mat-checkbox   (change)="onSelectStockList(row.id); onEnableStockArchieve()"   [checked]= "row.checked" >
                 </mat-checkbox>&nbsp; 
             </td>
         </ng-container> 
@@ -28,9 +20,7 @@
       <ng-container matColumnDef="name">
         <mat-header-cell *matHeaderCellDef> Name </mat-header-cell>
         <mat-cell *matCellDef="let element"> {{element.name}} </mat-cell>
-
       </ng-container>
-    
       <!-- Weight Column -->
       <ng-container matColumnDef="amount">
         <mat-header-cell *matHeaderCellDef> Amount </mat-header-cell>
@@ -41,14 +31,70 @@
             </mat-form-field>
         </mat-cell>
       </ng-container>
-      <mat-header-row *matHeaderRowDef="displayedColumns"></mat-header-row>
-      <mat-row *matRowDef="let row; columns: displayedColumns;"></mat-row>
+      <mat-header-row *matHeaderRowDef="displayedStockColumns"></mat-header-row>
+      <mat-row *matRowDef="let row; columns: displayedStockColumns;"></mat-row>
     </mat-table>
   </mat-card-content>
   <mat-card-actions>
-    <button mat-stroked-button color="primary" class="mr-1" [disabled]= "disabledBtn" (click)="onArchieve()">Archieve</button>
+    <button mat-stroked-button color="primary" class="mr-1" [disabled]= "disabledBtn" (click)="onArchieveStock()">Archieve</button>
     <button mat-stroked-button color="accent" class="mr-1" [disabled]= "disabledBtn">Delete</button>
-    <button mat-stroked-button color="warn" class="mr-1" *ngIf="showBtn" (click)= "onEdit()">Edit</button>
-    <button mat-stroked-button class="mr-1" *ngIf="!showBtn" (click)= "onBack()">Back</button>
+    <button mat-stroked-button color="warn" class="mr-1" *ngIf="showBtn"  (click)= "onEditStock()">Edit</button>
+    <button mat-stroked-button class="mr-1" *ngIf="!showBtn" (click)= "onBackStock()">Back</button>
   </mat-card-actions>
 </mat-card>
+</div>
+<div class="col-lg-1 vl"></div>
+<div class="col-lg-5">
+  <div class= "row">
+  <div class="col-sm-12 col-md-8">
+    <mat-form-field appearance="outline" class="example-full-width pr-2" >
+        <mat-label >List</mat-label>
+        <input matInput class="text-center" (keyup)="onCheckEnableAddTodoList()" [(ngModel)]= "list" placeholder="List">
+      </mat-form-field>
+    </div>
+    <div class="col-sm-12 col-md-1 mt-4">
+      <button class="ml-3" mat-stroked-button color="primary"  [disabled]= "disabledAddTodoBtn" (click)="onAddTodoList()"><mat-icon class="mr-1">add</mat-icon>Add</button>
+    </div>
+  </div>
+    <mat-card class="shopping-card" *ngIf="showTodoListCard">
+      <mat-card-header>
+        <div mat-card-avatar ><mat-icon>playlist_add_check</mat-icon></div>
+        <mat-card-title>Todo List</mat-card-title>
+      </mat-card-header>
+      <mat-card-content>
+        <mat-table [dataSource]="todoDataAll" class="mat-elevation-z8">
+            <ng-container matColumnDef="select">
+                <th mat-header-cell *matHeaderCellDef>
+                </th>
+                <td mat-cell *matCellDef="let row">
+                    <mat-checkbox   (change)="onSelectTodoList(row.id); onEnableTodoArchieve()" [checked]= "row.checked" >
+                    </mat-checkbox>&nbsp; 
+                </td>
+            </ng-container> 
+          <!-- Name Column -->
+          <ng-container matColumnDef="list">
+            <mat-header-cell *matHeaderCellDef> List </mat-header-cell>
+            <mat-cell *matCellDef="let element"> <ng-container *ngIf="showBtnTodolist">{{element.list}} </ng-container>
+                <mat-form-field appearance="outline" class="example-full-width pr-2" *ngIf="!showBtnTodolist">
+                    <mat-label >List</mat-label>
+                    <input matInput class="text-center" (change)="onChangeList(element.id)" [(ngModel)]= "element.list" placeholder="List">
+                  </mat-form-field>
+            </mat-cell>
+          </ng-container>
+          <mat-header-row *matHeaderRowDef="displayedTodoColumns"></mat-header-row>
+          <mat-row *matRowDef="let row; columns: displayedTodoColumns;"></mat-row>
+        </mat-table>
+      </mat-card-content>
+      <mat-card-actions>
+        <button mat-stroked-button color="primary" class="mr-1" [disabled]= "disabledTodoBtn" (click)="onArchieveTodoList()">Archieve</button>
+        <!-- <button mat-stroked-button color="accent" class="mr-1" [disabled]= "disabledTodoBtn">Delete</button> -->
+        <button mat-stroked-button color="warn" class="mr-1" *ngIf="showBtnTodolist"  (click)= "onEditTodolist()">Edit</button>
+        <button mat-stroked-button class="mr-1" *ngIf="!showBtnTodolist" (click)= "onBackTodolist()">Back</button>
+      </mat-card-actions>
+    </mat-card>
+
+    
+    </div>
+  </div>
+    
+</div>

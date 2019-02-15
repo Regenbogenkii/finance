@@ -1,0 +1,14 @@
+<h1 mat-dialog-title>Upload Photo</h1>
+  <div mat-dialog-content class="mt-5"> 
+    <input type="file" accept=".jpg ,.jpeg ,.png" id="uploadPhotoOnList" class="upload" (change)="onSelectFile($event)">
+    <div class="col-sm-12 mt-3" *ngIf="showProgressBar">
+        <label class="text-center">Loading</label>
+         <mat-progress-bar mode="buffer"></mat-progress-bar>    
+    </div>
+
+  </div>
+  
+  <div mat-dialog-actions class="mt-5 pull-right">
+    <button mat-button (click)="onNoClick()">Cancel</button>
+    <button mat-button color="primary" [disabled]="disabledBtn" (click)="onUpload()">Upload</button>
+  </div>

@@ -1,3 +1,8 @@
+.theme-color {
+  background-color: darkmagenta;
+  color: white;
+}
+
 table {
     width: 100%;
   }
@@ -15,8 +20,6 @@ table {
     margin-bottom: 10px; /* Added */
 }
 
-.mat-input-wrapper{
-    width: 150px!important;
-    height: 10px !important;
-    padding: 1em 0 1em 0 !important;
+.example-full-width {
+  width: 100%;
 }

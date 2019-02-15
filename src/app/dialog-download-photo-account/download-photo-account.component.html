@@ -1,0 +1,11 @@
+<mat-card class="example-card" style="margin: auto">
+    <mat-card-header>
+      <mat-card-title>{{dataAll.info.description}}</mat-card-title>
+      <mat-card-subtitle>{{dataAll.info.createdDate | date: 'dd/mm/yyyy'}}</mat-card-subtitle>
+    </mat-card-header>
+    <img mat-card-image [src]="dataAll.info.downLoadUrl">
+
+  </mat-card>
+  <div mat-dialog-actions class="pull-right">
+      <button mat-button (click)="onNoClick()">Close</button>
+    </div>

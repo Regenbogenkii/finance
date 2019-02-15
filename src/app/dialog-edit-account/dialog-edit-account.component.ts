@@ -62,6 +62,7 @@ export class DialogEditAccountComponent implements OnInit {
   }
 
   onGetCurrentDate() {
+    this.dataService.onGetUid()
     let date = moment().format();
     // console.log('date', date)
     return date

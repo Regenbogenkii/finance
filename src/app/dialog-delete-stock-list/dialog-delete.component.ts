@@ -17,6 +17,7 @@ deleteData
   }
 
   ngOnInit() {
+    this.dataService.onGetUid()
   }
 
   onOk(){

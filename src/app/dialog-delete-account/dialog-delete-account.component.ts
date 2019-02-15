@@ -18,6 +18,7 @@ export class DialogDeleteAccountComponent implements OnInit {
   }
 
   ngOnInit() {
+    this.dataService.onGetUid()
   }
 
   onOk() {

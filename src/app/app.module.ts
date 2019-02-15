@@ -5,7 +5,7 @@ import { FormsModule } from '@angular/forms';
 import { AppComponent } from './app.component';
 import { HouseholdStockComponent } from './household-stock/household-stock.component'
 import { AccountComponent } from './account/account.component';
-import { DialogEditComponent } from './dialog-edit/dialog-edit.component';
+import { DialogEditComponent } from './dialog-edit-stock-list/dialog-edit.component';
 import { ReactiveFormsModule } from '@angular/forms';
 import { AngularFireModule } from '@angular/fire';
 import { AngularFirestoreModule } from '@angular/fire/firestore';
@@ -17,6 +17,17 @@ import 'hammerjs';
 import * as $ from 'jquery';
 import { AppRoutingModule } from './app-routing.module';
 import {BrowserAnimationsModule} from '@angular/platform-browser/animations';
+import { DialogDeleteComponent } from './dialog-delete-stock-list/dialog-delete.component';
+import { DialogShoppingComponent } from './dialog-shopping/dialog-shopping.component';
+import { DialogAlertNoShoppingListComponent } from './dialog-alert-no-shopping-list/dialog-alert-no-shopping-list.component';
+import { DialogEditAccountComponent } from './dialog-edit-account/dialog-edit-account.component';
+import { DialogDeleteAccountComponent } from './dialog-delete-account/dialog-delete-account.component';
+import { DialogDownloadPhotoAccountComponent } from './dialog-download-photo-account/download-photo-account.component';
+import { DialogUploadComponent } from './dialog-upload/dialog-upload.component';
+import { LoginPageComponent } from './login-page/login-page.component';
+import { AuthGuard} from './core/auth.guard';
+import { SignupPageComponent } from './signup-page/signup-page.component';
+import { NavbarComponent } from './navbar/navbar.component';
 import {MatButtonModule, MatCheckboxModule, MatInputModule} from '@angular/material';
 import {MatTableModule} from '@angular/material/table';
 import {MatFormFieldModule} from '@angular/material/form-field';
@@ -27,16 +38,14 @@ import {MatDatepickerModule} from '@angular/material/datepicker';
 import {MatMomentDateModule} from '@angular/material-moment-adapter';
 import {MatCardModule} from '@angular/material/card';
 import {MatDialogModule} from '@angular/material/dialog';
-import { DialogDeleteComponent } from './dialog-delete/dialog-delete.component';
-import { DialogShoppingComponent } from './dialog-shopping/dialog-shopping.component';
-import { DialogAlertNoShoppingListComponent } from './dialog-alert-no-shopping-list/dialog-alert-no-shopping-list.component';
 import { TodoListComponent } from './todo-list/todo-list.component';
 import {MatListModule} from '@angular/material/list';
 import {MatRadioModule} from '@angular/material/radio';
 import {MatIconModule} from '@angular/material/icon';
-import { DialogEditAccountComponent } from './dialog-edit-account/dialog-edit-account.component';
-import { DialogDeleteAccountComponent } from './dialog-delete-account/dialog-delete-account.component';
 import {MatTabsModule} from '@angular/material/tabs';
+import {MatProgressBarModule} from '@angular/material/progress-bar';
+
+
 
 firebase.initializeApp(environment.firebaseConfig)
 
@@ -51,7 +60,12 @@ firebase.initializeApp(environment.firebaseConfig)
     DialogAlertNoShoppingListComponent,
     TodoListComponent,
     DialogEditAccountComponent,
-    DialogDeleteAccountComponent
+    DialogDeleteAccountComponent,
+    LoginPageComponent,
+    SignupPageComponent,
+    NavbarComponent,
+    DialogDownloadPhotoAccountComponent,
+    DialogUploadComponent
   ],
   imports: [
     BrowserModule,
@@ -79,17 +93,20 @@ firebase.initializeApp(environment.firebaseConfig)
     MatListModule,
     MatRadioModule,
     MatIconModule,
-    MatTabsModule
+    MatTabsModule,
+    MatProgressBarModule
 
   ],
-  providers: [],
+  providers: [AuthGuard],
   bootstrap: [AppComponent],
   entryComponents: [DialogEditComponent, 
     DialogDeleteComponent, 
     DialogShoppingComponent, 
     DialogAlertNoShoppingListComponent,
     DialogEditAccountComponent,
-    DialogDeleteAccountComponent
+    DialogDeleteAccountComponent,
+    DialogDownloadPhotoAccountComponent,
+    DialogUploadComponent
   ]
 })
 export class AppModule {

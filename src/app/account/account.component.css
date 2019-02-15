@@ -1,11 +1,16 @@
-.font-sm{
+.theme-color {
+  background-color: darkmagenta;
+  color: white;
+}
+
+.font-sm {
     font-size:  60%
 }
 
-.font-inline{
+.font-inline {
     display : inline-flex
 }
-.inputAccount{
+.inputAccount {
     width: auto;
     margin: auto;
 }
@@ -13,7 +18,7 @@ table {
     width: 100%;
   }
   
-  .mat-form-field {
+.mat-form-field {
     font-size: 14px;
     width: 100%;
   }
@@ -25,7 +30,6 @@ table {
     flex: 0 0 100px !important;
     white-space: unset !important;
   } */
-
 
 
 
